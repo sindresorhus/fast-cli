@@ -7,6 +7,8 @@
 
 ## Install
 
+Ensure you have [Node.js](https://nodejs.org) installed. Then run the following:
+
 ```
 $ npm install --global fast-cli
 ```
