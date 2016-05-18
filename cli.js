@@ -1,18 +1,15 @@
 #!/usr/bin/env node
 'use strict';
 const meow = require('meow');
-const updateNotifier = require('update-notifier');
 const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
 
-const cli = meow(`
+meow(`
 	Usage
 	  $ fast
 `);
-
-updateNotifier({pkg: cli.pkg}).notify();
 
 let data = {};
 const spinner = ora();
