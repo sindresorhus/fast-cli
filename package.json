@@ -1,0 +1,56 @@
+{
+  "name": "fast-cli",
+  "version": "0.0.0",
+  "description": "Test your download speed using fast.com",
+  "license": "MIT",
+  "repository": "sindresorhus/fast-cli",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "bin": {
+    "fast": "cli.js"
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "cli.js",
+    "api.js"
+  ],
+  "keywords": [
+    "cli-app",
+    "cli",
+    "speed",
+    "test",
+    "fast",
+    "tester",
+    "down",
+    "download",
+    "speed-test",
+    "speedtest",
+    "connection",
+    "internet",
+    "bandwidth",
+    "measure",
+    "check",
+    "mbps"
+  ],
+  "dependencies": {
+    "chalk": "^1.1.0",
+    "log-update": "^1.0.0",
+    "meow": "^3.3.0",
+    "ora": "^0.2.1",
+    "phantomjs-prebuilt": "^2.1.7",
+    "promise-phantom": "^3.1.1",
+    "update-notifier": "^0.7.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "xo": "*"
+  }
+}
