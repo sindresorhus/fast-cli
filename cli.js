@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+/* eslint-disable prefer-template */
 const meow = require('meow');
 const chalk = require('chalk');
 const logUpdate = require('log-update');

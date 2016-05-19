@@ -4,7 +4,8 @@ const driver = require('promise-phantom');
 const phantomjs = require('phantomjs-prebuilt');
 
 function init(page, cb, prevSpeed) {
-	page.evaluate(function () {
+	// TODO: doesn't work with arrow function. open issue on `promise-phantom`
+	page.evaluate(function () { // eslint-disable-line
 		const $ = document.querySelector.bind(document);
 
 		return {
