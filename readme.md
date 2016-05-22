@@ -7,7 +7,7 @@
 
 ## Install
 
-Ensure you have [Node.js](https://nodejs.org) installed. Then run the following:
+Ensure you have [Node.js](https://nodejs.org) version 4+ installed. Then run the following:
 
 ```
 $ npm install --global fast-cli
