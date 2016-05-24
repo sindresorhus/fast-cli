@@ -1,11 +1,12 @@
 'use strict';
 /* eslint-env browser */
+const events = require('events');
 const driver = require('promise-phantom');
 const phantomjs = require('phantomjs-prebuilt');
 
-function init(page, cb, prevSpeed) {
+const init = (emitter, page, prevSpeed) => {
 	// TODO: doesn't work with arrow function. open issue on `promise-phantom`
-	page.evaluate(function () { // eslint-disable-line
+	return page.evaluate(function () { // eslint-disable-line
 		const $ = document.querySelector.bind(document);
 
 		return {
@@ -17,24 +18,26 @@ function init(page, cb, prevSpeed) {
 	})
 	.then(result => {
 		if (result.speed > 0 && result.speed !== prevSpeed) {
-			cb(null, result);
+			emitter.emit('progress', result);
 		}
 
 		if (result.isDone) {
 			page.close();
-		} else {
-			setTimeout(init, 100, page, cb, result.speed);
+			return result;
 		}
-	})
-	.catch(cb);
-}
 
-// TODO: use an event for progress and return a promise for completion
-module.exports = cb => {
-	driver.create({path: phantomjs.path})
+		return init(emitter, page, result.speed);
+	});
+};
+
+module.exports = () => {
+	const emitter = new events.EventEmitter();
+	const promise = driver.create({path: phantomjs.path})
 		.then(phantom => phantom.createPage())
-		.then(page => page.open('http://fast.com').then(() => {
-			init(page, cb);
-		}))
-		.catch(cb);
+		.then(page => page.open('http://fast.com').then(() => init(emitter, page)));
+
+	emitter.then = promise.then.bind(promise);
+	emitter.catch = promise.catch.bind(promise);
+
+	return emitter;
 };

@@ -13,13 +13,14 @@ meow(`
 `);
 
 let data = {};
+
 const spinner = ora();
 const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n';
 
-function exit() {
+const exit = () => {
 	logUpdate('\n\n    ' + speed());
 	process.exit();
-}
+};
 
 setInterval(() => {
 	const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
@@ -32,24 +33,10 @@ setInterval(() => {
 	logUpdate(pre + speed());
 }, 50);
 
-let timeout;
-
-api((err, result) => {
-	if (err) {
-		throw err;
-	}
-
-	data = result;
-
-	// exit after the speed has been the same for 3 sec
-	// needed as sometimes `isDone` doens't work for some reason
-	clearTimeout(timeout);
-	timeout = setTimeout(() => {
-		data.isDone = true;
+api()
+	.on('progress', result => {
+		data = result;
+	})
+	.then(() => {
 		exit();
-	}, 5000);
-
-	if (data.isDone) {
-		exit();
-	}
-});
+	});
