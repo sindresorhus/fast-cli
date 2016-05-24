@@ -1,6 +1,6 @@
 'use strict';
 /* eslint-env browser */
-const events = require('events');
+const EventEmitter = require('events');
 const driver = require('promise-phantom');
 const phantomjs = require('phantomjs-prebuilt');
 
@@ -31,7 +31,7 @@ const init = (emitter, page, prevSpeed) => {
 };
 
 module.exports = () => {
-	const emitter = new events.EventEmitter();
+	const emitter = new EventEmitter();
 	const promise = driver.create({path: phantomjs.path})
 		.then(phantom => phantom.createPage())
 		.then(page => page.open('http://fast.com').then(() => init(emitter, page)));

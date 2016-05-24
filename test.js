@@ -11,6 +11,5 @@ test('api', async t => {
 });
 
 test('cli', async t => {
-	const stdout = await execa.stdout('./cli.js');
-	t.regex(stdout, /\d+\s\w+/);
+	t.regex(await execa.stdout('./cli.js'), /\d+\s\w+/);
 });
