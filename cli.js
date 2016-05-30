@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 /* eslint-disable prefer-template */
+const dns = require('dns');
 const meow = require('meow');
 const chalk = require('chalk');
 const logUpdate = require('log-update');
@@ -12,9 +13,18 @@ meow(`
 	  $ fast
 `);
 
+// check connection
+dns.lookup('fast.com', err => {
+	if (err && err.code === 'ENOTFOUND') {
+		console.log(chalk.red('\n Please check you internet connection.\n'));
+		process.exit(1);
+	}
+});
+
 let data = {};
 const spinner = ora();
-const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n';
+
+const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n\n';
 
 function exit() {
 	logUpdate('\n\n    ' + speed());
