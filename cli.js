@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-
 'use strict';
 /* eslint-disable prefer-template */
 const meow = require('meow');
 const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
+const dns = require('dns');
 const api = require('./api');
 
 meow(`
@@ -13,25 +13,12 @@ meow(`
 	  $ fast
 `);
 
-// dealing with connections in a better way
-function checkConnection(cb) {
-	require('dns').lookup('fast.com', err => {
-		if (err && err.code === 'ENOTFOUND') {
-			cb(false);
-		} else {
-			cb(true);
-		}
-	});
-}
-
-checkConnection(isConnected => {
-	if (isConnected) {
-		// no need, and even if we show the message, it won't print because of running spinners.
-	} else {
-		console.log(chalk.red('\n Please check you internet connection.\n'));
-		// exiting if the network is unreachable
-		process.exit(1);
-	}
+// check connection
+dns.lookup('fast.com', err => {
+    if (err && err.code === 'ENOTFOUND') {
+        console.log(chalk.red('\n Please check you internet connection.\n'));
+        process.exit(1);
+    }
 });
 
 let data = {};
