@@ -7,10 +7,14 @@ const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
+const log = require('./log');
 
-meow(`
+const cli = meow(`
 	Usage
 	  $ fast
+
+	Options
+	  --log	Writes each speed measurement to log.txt
 `);
 
 // check connection
@@ -52,12 +56,16 @@ api((err, result) => {
 	data = result;
 
 	// exit after the speed has been the same for 3 sec
-	// needed as sometimes `isDone` doens't work for some reason
+	// needed as sometimes `isDone` doesn't work for some reason
 	clearTimeout(timeout);
 	timeout = setTimeout(() => {
 		data.isDone = true;
 		exit();
 	}, 5000);
+
+	if (cli.flags.log) {
+		log(data.speed);
+	}
 
 	if (data.isDone) {
 		exit();
