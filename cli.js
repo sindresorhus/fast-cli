@@ -52,7 +52,7 @@ api((err, result) => {
 	data = result;
 
 	// exit after the speed has been the same for 3 sec
-	// needed as sometimes `isDone` doens't work for some reason
+	// needed as sometimes `isDone` doesn't work for some reason
 	clearTimeout(timeout);
 	timeout = setTimeout(() => {
 		data.isDone = true;
