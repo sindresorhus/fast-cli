@@ -5,7 +5,7 @@ const phantomjs = require('phantomjs-prebuilt');
 
 function init(page, cb, prevSpeed) {
 	// TODO: doesn't work with arrow function. open issue on `promise-phantom`
-	page.evaluate(function () { // eslint-disable-line
+	page.evaluate(function () { // eslint-disable-line prefer-arrow-callback
 		const $ = document.querySelector.bind(document);
 
 		return {
