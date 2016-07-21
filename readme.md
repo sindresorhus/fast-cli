@@ -21,6 +21,11 @@ $ fast --help
 
   Usage
     $ fast
+    $ fast > file
+
+  Example
+    $ fast | cat
+    90 Mbps
 ```
 
 

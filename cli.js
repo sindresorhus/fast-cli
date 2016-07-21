@@ -11,6 +11,11 @@ const api = require('./api');
 meow(`
 	Usage
 	  $ fast
+	  $ fast > file
+
+	Example
+	  $ fast | cat
+	  90 Mbps
 `);
 
 // check connection

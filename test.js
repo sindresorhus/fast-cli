@@ -1,7 +1,9 @@
 import childProcess from 'child_process';
+import execa from 'execa';
 import test from 'ava';
 
-test.cb(t => {
+test.cb('default', t => {
+	// TODO: use `execa` here when the `spawn` API is done
 	const cp = childProcess.spawn('./cli.js', {stdio: 'inherit'});
 
 	cp.on('error', t.ifError);
@@ -10,4 +12,8 @@ test.cb(t => {
 		t.is(code, 0);
 		t.end();
 	});
+});
+
+test('non-tty', async t => {
+	t.regex(await execa.stdout('./cli.js'), /\d+ \w/i);
 });
