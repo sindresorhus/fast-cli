@@ -27,20 +27,23 @@ const spinner = ora();
 const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n\n';
 
 function exit() {
-	logUpdate('\n\n    ' + speed());
+	const output = process.stdout.isTTY ? `\n\n    ${speed()}` : `${data.speed} ${data.unit}`;
+	logUpdate(output);
 	process.exit();
 }
 
-setInterval(() => {
-	const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
+if (process.stdout.isTTY) {
+	setInterval(() => {
+		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
 
-	if (!data.speed) {
-		logUpdate(pre + '\n');
-		return;
-	}
+		if (!data.speed) {
+			logUpdate(pre + '\n');
+			return;
+		}
 
-	logUpdate(pre + speed());
-}, 50);
+		logUpdate(pre + speed());
+	}, 50);
+}
 
 let timeout;
 
