@@ -42,11 +42,11 @@
   ],
   "dependencies": {
     "chalk": "^1.1.0",
+    "jsdom": "^9.4.1",
     "log-update": "^1.0.0",
     "meow": "^3.3.0",
     "ora": "^0.2.1",
-    "phantomjs-prebuilt": "^2.1.7",
-    "promise-phantom": "^3.1.1"
+    "zen-observable": "^0.3.0"
   },
   "devDependencies": {
     "ava": "*",
