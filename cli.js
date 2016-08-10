@@ -17,7 +17,7 @@ meow(`
 // check connection
 dns.lookup('fast.com', err => {
 	if (err && err.code === 'ENOTFOUND') {
-		console.error(chalk.red('\n Please check you internet connection.\n'));
+		console.error(chalk.red('\n Please check your internet connection.\n'));
 		process.exit(1);
 	}
 });
