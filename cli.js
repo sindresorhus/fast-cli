@@ -10,8 +10,8 @@ const api = require('./api');
 
 meow(`
 	Usage
-	  $ fast
-	  $ fast > file
+		$ fast
+		$ fast > file
 `);
 
 // check connection
@@ -48,22 +48,22 @@ if (process.stdout.isTTY) {
 
 let timeout;
 
-api((err, result) => {
-	if (err) {
+api()
+	.forEach(result => {
+		data = result;
+		// exit after the speed has been the same for 3 sec
+		// needed as sometimes `isDone` doesn't work for some reason
+		clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			data.isDone = true;
+			exit();
+		}, 5000);
+
+		if (data.isDone) {
+			exit();
+		}
+	})
+	.then(() => exit())
+	.catch(err => {
 		throw err;
-	}
-
-	data = result;
-
-	// exit after the speed has been the same for 3 sec
-	// needed as sometimes `isDone` doesn't work for some reason
-	clearTimeout(timeout);
-	timeout = setTimeout(() => {
-		data.isDone = true;
-		exit();
-	}, 5000);
-
-	if (data.isDone) {
-		exit();
-	}
-});
+	});
