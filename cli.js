@@ -10,8 +10,8 @@ const api = require('./api');
 
 meow(`
 	Usage
-		$ fast
-		$ fast > file
+	  $ fast
+	  $ fast > file
 `);
 
 // check connection
@@ -65,5 +65,6 @@ api()
 	})
 	.then(() => exit())
 	.catch(err => {
-		throw err;
+		console.error(err.message);
+		process.exit(1);
 	});

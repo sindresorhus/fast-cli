@@ -31,7 +31,6 @@ function init(page, observer, prevSpeed) {
 	.catch(err => observer.error(err));
 }
 
-// TODO: use an event for progress and return a promise for completion
 module.exports = () => new Observable(observer => {
 	driver.create({path: phantomjs.path})
 		.then(phantom => phantom.createPage())
