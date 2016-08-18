@@ -2,8 +2,9 @@
 /* eslint-env browser */
 const driver = require('promise-phantom');
 const phantomjs = require('phantomjs-prebuilt');
+const Observable = require('zen-observable');
 
-function init(page, cb, prevSpeed) {
+function init(page, observer, prevSpeed) {
 	// TODO: doesn't work with arrow function. open issue on `promise-phantom`
 	page.evaluate(function () { // eslint-disable-line prefer-arrow-callback
 		const $ = document.querySelector.bind(document);
@@ -17,24 +18,24 @@ function init(page, cb, prevSpeed) {
 	})
 	.then(result => {
 		if (result.speed > 0 && result.speed !== prevSpeed) {
-			cb(null, result);
+			observer.next(result);
 		}
 
 		if (result.isDone) {
 			page.close();
+			observer.complete();
 		} else {
-			setTimeout(init, 100, page, cb, result.speed);
+			setTimeout(init, 100, page, observer, result.speed);
 		}
 	})
-	.catch(cb);
+	.catch(err => observer.error(err));
 }
 
-// TODO: use an event for progress and return a promise for completion
-module.exports = cb => {
+module.exports = () => new Observable(observer => {
 	driver.create({path: phantomjs.path})
 		.then(phantom => phantom.createPage())
 		.then(page => page.open('http://fast.com').then(() => {
-			init(page, cb);
+			init(page, observer);
 		}))
-		.catch(cb);
-};
+		.catch(err => observer.error(err));
+});

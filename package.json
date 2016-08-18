@@ -46,7 +46,8 @@
     "meow": "^3.3.0",
     "ora": "^0.3.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "promise-phantom": "^3.1.1"
+    "promise-phantom": "^3.1.1",
+    "zen-observable": "^0.3.0"
   },
   "devDependencies": {
     "ava": "*",
