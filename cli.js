@@ -28,8 +28,12 @@ const spinner = ora();
 const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n\n';
 
 function exit() {
-	const output = process.stdout.isTTY ? `\n\n    ${speed()}` : `${data.speed} ${data.unit}`;
-	logUpdate(output);
+    if (process.stdout.isTTY) {
+        logUpdate(`\n\n    ${speed()}`);
+    } else {
+        console.log(`${data.speed} ${data.unit}`);
+    }
+
 	process.exit();
 }
 
