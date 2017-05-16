@@ -5,14 +5,14 @@ const phantomjs = require('phantomjs-prebuilt');
 const Observable = require('zen-observable');
 
 function init(page, observer, prevSpeed) {
-	// TODO: doesn't work with arrow function. open issue on `promise-phantom`
+	// TODO: Doesn't work with arrow function. open issue on `promise-phantom`
 	page.evaluate(function () { // eslint-disable-line prefer-arrow-callback
 		const $ = document.querySelector.bind(document);
 
 		return {
 			speed: Number($('#speed-value').textContent),
 			unit: $('#speed-units').textContent.trim(),
-			// somehow it didn't work with `Boolean($('#speed-value.succeeded'))`
+			// Somehow it didn't work with `Boolean($('#speed-value.succeeded'))`
 			isDone: document.querySelectorAll('.succeeded').length > 0
 		};
 	})

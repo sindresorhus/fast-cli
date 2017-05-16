@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 'use strict';
-/* eslint-disable prefer-template */
 const dns = require('dns');
 const meow = require('meow');
 const chalk = require('chalk');
@@ -14,7 +13,7 @@ meow(`
 	  $ fast > file
 `);
 
-// check connection
+// Check connection
 dns.lookup('fast.com', err => {
 	if (err && err.code === 'ENOTFOUND') {
 		console.error(chalk.red('\n Please check your internet connection.\n'));
@@ -28,11 +27,11 @@ const spinner = ora();
 const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n\n';
 
 function exit() {
-    if (process.stdout.isTTY) {
-        logUpdate(`\n\n    ${speed()}`);
-    } else {
-        console.log(`${data.speed} ${data.unit}`);
-    }
+	if (process.stdout.isTTY) {
+		logUpdate(`\n\n    ${speed()}`);
+	} else {
+		console.log(`${data.speed} ${data.unit}`);
+	}
 
 	process.exit();
 }
@@ -55,7 +54,7 @@ let timeout;
 api()
 	.forEach(result => {
 		data = result;
-		// exit after the speed has been the same for 3 sec
+		// Exit after the speed has been the same for 3 sec
 		// needed as sometimes `isDone` doesn't work for some reason
 		clearTimeout(timeout);
 		timeout = setTimeout(() => {
