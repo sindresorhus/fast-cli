@@ -41,7 +41,7 @@ if (process.stdout.isTTY) {
 		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
 
 		if (!data.speed) {
-			logUpdate(pre + '\n');
+			logUpdate(pre + '\n\n');
 			return;
 		}
 
