@@ -15,5 +15,5 @@ test.cb('default', t => {
 });
 
 test('non-tty', async t => {
-	t.regex(await execa.stdout('./cli.js'), /\d+ \w/i);
+	t.regex(await execa.stdout('./cli.js'), /^\d+(?:\.\d+)? \w+$/i);
 });
