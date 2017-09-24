@@ -1,19 +1,16 @@
 'use strict';
 /* eslint-env browser */
-const driver = require('promise-phantom');
-const phantomjs = require('phantomjs-prebuilt');
+const puppeteer = require('puppeteer');
 const Observable = require('zen-observable');
 
-function init(page, observer, prevSpeed) {
-	// TODO: Doesn't work with arrow function. open issue on `promise-phantom`
-	page.evaluate(function () { // eslint-disable-line prefer-arrow-callback
+function init(page, browser, observer, prevSpeed) {
+	page.evaluate(() => {
 		const $ = document.querySelector.bind(document);
 
 		return {
 			speed: Number($('#speed-value').textContent),
 			unit: $('#speed-units').textContent.trim(),
-			// Somehow it didn't work with `Boolean($('#speed-value.succeeded'))`
-			isDone: document.querySelectorAll('.succeeded').length > 0
+			isDone: Boolean($('#speed-value.succeeded'))
 		};
 	})
 	.then(result => {
@@ -22,20 +19,19 @@ function init(page, observer, prevSpeed) {
 		}
 
 		if (result.isDone) {
-			page.close();
+			browser.close();
 			observer.complete();
 		} else {
-			setTimeout(init, 100, page, observer, result.speed);
+			setTimeout(init, 100, page, browser, observer, result.speed);
 		}
 	})
 	.catch(err => observer.error(err));
 }
 
 module.exports = () => new Observable(observer => {
-	driver.create({path: phantomjs.path})
-		.then(phantom => phantom.createPage())
-		.then(page => page.open('http://fast.com').then(() => {
-			init(page, observer);
-		}))
+	puppeteer.launch()
+		.then(browser => Promise.all([browser, browser.newPage()]))
+		.then(([browser, page]) => Promise.all([browser, page, page.goto('http://fast.com')]))
+		.then(([browser, page]) => init(page, browser, observer))
 		.catch(err => observer.error(err));
 });
