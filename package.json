@@ -1,56 +1,56 @@
 {
-  "name": "fast-cli",
-  "version": "1.0.0",
-  "description": "Test your download speed using fast.com",
-  "license": "MIT",
-  "repository": "sindresorhus/fast-cli",
-  "author": {
-    "name": "Sindre Sorhus",
-    "email": "sindresorhus@gmail.com",
-    "url": "sindresorhus.com"
-  },
-  "bin": {
-    "fast": "cli.js"
-  },
-  "engines": {
-    "node": ">=6.4.0"
-  },
-  "scripts": {
-    "test": "xo && ava"
-  },
-  "files": [
-    "cli.js",
-    "api.js"
-  ],
-  "keywords": [
-    "cli-app",
-    "cli",
-    "speed",
-    "test",
-    "fast",
-    "tester",
-    "down",
-    "download",
-    "speed-test",
-    "speedtest",
-    "connection",
-    "internet",
-    "bandwidth",
-    "measure",
-    "check",
-    "mbps"
-  ],
-  "dependencies": {
-    "chalk": "^1.1.0",
-    "log-update": "^1.0.0",
-    "meow": "^3.3.0",
-    "ora": "^1.2.0",
-    "puppeteer": "^0.11.0",
-    "zen-observable": "^0.5.1"
-  },
-  "devDependencies": {
-    "ava": "*",
-    "execa": "^0.6.3",
-    "xo": "*"
-  }
+	"name": "fast-cli",
+	"version": "1.0.0",
+	"description": "Test your download speed using fast.com",
+	"license": "MIT",
+	"repository": "sindresorhus/fast-cli",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "sindresorhus.com"
+	},
+	"bin": {
+		"fast": "cli.js"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava"
+	},
+	"files": [
+		"cli.js",
+		"api.js"
+	],
+	"keywords": [
+		"cli-app",
+		"cli",
+		"speed",
+		"test",
+		"fast",
+		"tester",
+		"down",
+		"download",
+		"speed-test",
+		"speedtest",
+		"connection",
+		"internet",
+		"bandwidth",
+		"measure",
+		"check",
+		"mbps"
+	],
+	"dependencies": {
+		"chalk": "^2.1.0",
+		"log-update": "^2.1.0",
+		"meow": "^3.3.0",
+		"ora": "^1.2.0",
+		"puppeteer": "^0.11.0",
+		"zen-observable": "^0.5.1"
+	},
+	"devDependencies": {
+		"ava": "*",
+		"execa": "^0.8.0",
+		"xo": "*"
+	}
 }
