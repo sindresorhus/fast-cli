@@ -49,22 +49,9 @@ if (process.stdout.isTTY) {
 	}, 50);
 }
 
-let timeout;
-
 api()
 	.forEach(result => {
 		data = result;
-		// Exit after the speed has been the same for 3 sec
-		// needed as sometimes `isDone` doesn't work for some reason
-		clearTimeout(timeout);
-		timeout = setTimeout(() => {
-			data.isDone = true;
-			exit();
-		}, 5000);
-
-		if (data.isDone) {
-			exit();
-		}
 	})
 	.then(() => exit())
 	.catch(err => {
