@@ -3,8 +3,8 @@
 const puppeteer = require('puppeteer');
 const Observable = require('zen-observable');
 
-function init(page, browser, observer, prevSpeed) {
-	page.evaluate(() => {
+async function init(browser, page, observer, prevSpeed) {
+	const result = await page.evaluate(() => {
 		const $ = document.querySelector.bind(document);
 
 		return {
@@ -12,26 +12,27 @@ function init(page, browser, observer, prevSpeed) {
 			unit: $('#speed-units').textContent.trim(),
 			isDone: Boolean($('#speed-value.succeeded'))
 		};
-	})
-	.then(result => {
-		if (result.speed > 0 && result.speed !== prevSpeed) {
-			observer.next(result);
-		}
+	});
 
-		if (result.isDone) {
-			browser.close();
-			observer.complete();
-		} else {
-			setTimeout(init, 100, page, browser, observer, result.speed);
-		}
-	})
-	.catch(err => observer.error(err));
+	if (result.speed > 0 && result.speed !== prevSpeed) {
+		observer.next(result);
+	}
+
+	if (result.isDone) {
+		browser.close();
+		observer.complete();
+	} else {
+		setTimeout(init, 100, browser, page, observer, result.speed);
+	}
 }
 
 module.exports = () => new Observable(observer => {
-	puppeteer.launch()
-		.then(browser => Promise.all([browser, browser.newPage()]))
-		.then(([browser, page]) => Promise.all([browser, page, page.goto('http://fast.com')]))
-		.then(([browser, page]) => init(page, browser, observer))
-		.catch(err => observer.error(err));
+	// Wrapped in async IIFE as `new Observable` can't handle async function
+	(async () => {
+		const browser = await puppeteer.launch();
+		const page = await browser.newPage();
+
+		await page.goto('https://fast.com');
+		await init(browser, page, observer);
+	})().catch(observer.error.bind(observer));
 });
