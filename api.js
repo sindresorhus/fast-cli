@@ -29,7 +29,7 @@ async function init(browser, page, observer, prevSpeed) {
 module.exports = () => new Observable(observer => {
 	// Wrapped in async IIFE as `new Observable` can't handle async function
 	(async () => {
-		const browser = await puppeteer.launch();
+		const browser = await puppeteer.launch({args: ['--no-sandbox']});
 		const page = await browser.newPage();
 
 		await page.goto('https://fast.com');
