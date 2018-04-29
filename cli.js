@@ -49,12 +49,15 @@ if (process.stdout.isTTY) {
 	}, 50);
 }
 
-api()
-	.forEach(result => {
-		data = result;
-	})
-	.then(() => exit())
-	.catch(err => {
-		console.error(err.message);
+(async () => {
+	try {
+		await api().forEach(result => {
+			data = result;
+		});
+
+		exit();
+	} catch (error) {
+		console.error(error.message);
 		process.exit(1);
-	});
+	}
+})();
