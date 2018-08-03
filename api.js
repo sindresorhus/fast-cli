@@ -1,38 +1,50 @@
-'use strict';
+'use strict'
 /* eslint-env browser */
-const puppeteer = require('puppeteer');
-const Observable = require('zen-observable');
+const puppeteer = require('puppeteer')
+const Observable = require('zen-observable')
+const equals = require('deep-equal')
 
-async function init(browser, page, observer, prevSpeed) {
-	const result = await page.evaluate(() => {
-		const $ = document.querySelector.bind(document);
+function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms))
+}
 
-		return {
-			speed: Number($('#speed-value').textContent),
-			unit: $('#speed-units').textContent.trim(),
-			isDone: Boolean($('#speed-value.succeeded'))
-		};
-	});
+async function init(browser, page, observer) {
+	let prevResult
 
-	if (result.speed > 0 && result.speed !== prevSpeed) {
-		observer.next(result);
-	}
+	while (true) {
+		const result = await page.evaluate(() => {
+			const $ = document.querySelector.bind(document)
 
-	if (result.isDone) {
-		browser.close();
-		observer.complete();
-	} else {
-		setTimeout(init, 100, browser, page, observer, result.speed);
+			return {
+				downloadSpeed: Number($('#speed-value').textContent),
+				uploadSpeed: Number($('#upload-value').textContent),
+				unit: $('#speed-units').textContent.trim(),
+				isDone: Boolean($('#speed-value.succeeded')),
+			}
+		})
+
+		if (result.downloadSpeed > 0 && !equals(result, prevResult)) {
+			observer.next(result)
+		}
+
+		if (result.isDone) {
+			browser.close()
+			observer.complete()
+			return
+		}
+
+		delay(100)
 	}
 }
 
-module.exports = () => new Observable(observer => {
-	// Wrapped in async IIFE as `new Observable` can't handle async function
-	(async () => {
-		const browser = await puppeteer.launch({args: ['--no-sandbox']});
-		const page = await browser.newPage();
+module.exports = () =>
+	new Observable(observer => {
+		// Wrapped in async IIFE as `new Observable` can't handle async function
+		;(async () => {
+			const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
+			const page = await browser.newPage()
 
-		await page.goto('https://fast.com');
-		await init(browser, page, observer);
-	})().catch(observer.error.bind(observer));
-});
+			await page.goto('https://fast.com')
+			await init(browser, page, observer)
+		})().catch(observer.error.bind(observer))
+	})

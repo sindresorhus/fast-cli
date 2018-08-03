@@ -42,6 +42,7 @@
 	],
 	"dependencies": {
 		"chalk": "^2.1.0",
+		"deep-equal": "^1.0.1",
 		"log-update": "^2.1.0",
 		"meow": "^5.0.0",
 		"ora": "^2.0.0",
