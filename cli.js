@@ -26,14 +26,22 @@ const spinner = ora()
 
 const speed = () =>
 	chalk[data.isDone ? 'green' : 'cyan'](
-		data.downloadSpeed + ' ' + chalk.dim(data.unit),
+		data.downloadSpeed +
+			' ' +
+			chalk.dim(data.downloadUnit) +
+			chalk.gray(' / ') +
+			(data.uploadSpeed || '-') +
+			' ' +
+			chalk.dim(data.uploadUnit),
 	) + '\n\n'
 
 function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`\n\n    ${speed()}`)
 	} else {
-		console.log(`${data.downloadSpeed} ${data.unit}`)
+		console.log(
+			`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`,
+		)
 	}
 
 	process.exit()

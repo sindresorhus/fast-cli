@@ -18,7 +18,8 @@ async function init(browser, page, observer) {
 			return {
 				downloadSpeed: Number($('#speed-value').textContent),
 				uploadSpeed: Number($('#upload-value').textContent),
-				unit: $('#speed-units').textContent.trim(),
+				downloadUnit: $('#speed-units').textContent.trim(),
+				uploadUnit: $('#upload-units').textContent.trim(),
 				isDone: Boolean(
 					$('#speed-value.succeeded') && $('#upload-value.succeeded'),
 				),
