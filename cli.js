@@ -61,8 +61,8 @@ if (process.stdout.isTTY) {
 		logUpdate(pre + speed());
 
 		if (!cli.flags.verbose && data.uploadSpeed) {
-			data.isDone = true
-			exit()
+			data.isDone = true;
+			exit();
 		}
 	}, 50);
 }

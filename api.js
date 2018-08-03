@@ -11,7 +11,7 @@ function delay(ms) {
 async function init(browser, page, observer) {
 	let prevResult;
 
-	/* eslint-disable no-constant-condition no-await-in-loop */
+	/* eslint-disable no-constant-condition, no-await-in-loop */
 
 	while (true) {
 		const result = await page.evaluate(() => {
@@ -41,7 +41,7 @@ async function init(browser, page, observer) {
 		await delay(100);
 	}
 
-	/* eslint-enable no-constant-condition no-await-in-loop */
+	/* eslint-enable no-constant-condition, no-await-in-loop */
 }
 
 module.exports = () =>
