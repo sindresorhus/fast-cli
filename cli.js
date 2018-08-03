@@ -7,7 +7,7 @@ const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
 
-meow(`
+const cli = meow(`
 	Usage
 	  $ fast
 	  $ fast > file
@@ -29,10 +29,12 @@ const speed = () =>
 		data.downloadSpeed +
 			' ' +
 			chalk.dim(data.downloadUnit) +
-			chalk.gray(' / ') +
-			(data.uploadSpeed || '-') +
-			' ' +
-			chalk.dim(data.uploadUnit),
+			(cli.flags.verbose ? (
+				chalk.gray(' / ') +
+				(data.uploadSpeed || '-') +
+				' ' +
+				chalk.dim(data.uploadUnit)
+			) : '')
 	) + '\n\n';
 
 function exit() {
@@ -57,6 +59,11 @@ if (process.stdout.isTTY) {
 		}
 
 		logUpdate(pre + speed());
+
+		if (!cli.flags.verbose && data.uploadSpeed) {
+			data.isDone = true
+			exit()
+		}
 	}, 50);
 }
 
