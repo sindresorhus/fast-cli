@@ -10,7 +10,8 @@ const api = require('./api');
 const cli = meow(`
 	Usage
 	  $ fast
-	  $ fast > file
+		$ fast > file
+		$ fast --verbose
 `);
 
 // Check connection
@@ -41,9 +42,15 @@ function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`\n\n    ${speed()}`);
 	} else {
-		console.log(
-			`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`,
-		);
+		if (cli.flags.verbose) {
+			console.log(
+				`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`,
+			);
+		} else {
+			console.log(
+				`${data.downloadSpeed} ${data.downloadUnit}`,
+			);
+		}
 	}
 
 	process.exit();
