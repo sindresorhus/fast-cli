@@ -41,16 +41,14 @@ const speed = () =>
 function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`\n\n    ${speed()}`);
+	} else if (cli.flags.verbose) {
+		console.log(
+			`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`,
+		);
 	} else {
-		if (cli.flags.verbose) {
-			console.log(
-				`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`,
-			);
-		} else {
-			console.log(
-				`${data.downloadSpeed} ${data.downloadUnit}`,
-			);
-		}
+		console.log(
+			`${data.downloadSpeed} ${data.downloadUnit}`,
+		);
 	}
 
 	process.exit();
