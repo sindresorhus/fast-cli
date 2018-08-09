@@ -8,13 +8,16 @@ async function init(browser, page, observer, prevSpeed) {
 		const $ = document.querySelector.bind(document);
 
 		return {
-			speed: Number($('#speed-value').textContent),
-			unit: $('#speed-units').textContent.trim(),
-			isDone: Boolean($('#speed-value.succeeded'))
+			downloadspeed: Number($('#speed-value').textContent),
+			downloadunit: $('#speed-units').textContent.trim(),
+			uploadspeed: Number($('#upload-value').textContent),
+			uploadunit: $('#upload-units').textContent.trim(),
+
+			isDone: Boolean($('#upload-value.succeeded'))
 		};
 	});
 
-	if (result.speed > 0 && result.speed !== prevSpeed) {
+	if (result.uploadspeed > 0 && result.uploadunit !== prevSpeed) {
 		observer.next(result);
 	}
 
@@ -22,7 +25,7 @@ async function init(browser, page, observer, prevSpeed) {
 		browser.close();
 		observer.complete();
 	} else {
-		setTimeout(init, 100, browser, page, observer, result.speed);
+		setTimeout(init, 100, browser, page, observer, result.downloadspeed, result.uploadspeed);
 	}
 }
 
