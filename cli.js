@@ -24,13 +24,14 @@ dns.lookup('fast.com', err => {
 let data = {};
 const spinner = ora();
 
-const speed = () => chalk[data.isDone ? 'green' : 'cyan'](data.speed + ' ' + chalk.dim(data.unit)) + '\n\n';
+const downloadspeed = () => chalk[data.isDone ? 'green' : 'cyan'](data.downloadspeed + ' ' + chalk.dim(data.downloadunit)) + ' Download' + '\n\n';
+const uploadspeed = () => chalk[data.isDone ? 'green' : 'cyan'](data.uploadspeed + ' ' + chalk.dim(data.uploadunit)) + ' Upload' + '\n\n';
 
 function exit() {
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}`);
+		logUpdate(`\n\n    ${downloadspeed()}` + `\n\n    ${uploadspeed()}`);
 	} else {
-		console.log(`${data.speed} ${data.unit}`);
+		console.log(`${data.downloadspeed} ${data.downloadunit}`);
 	}
 
 	process.exit();
@@ -40,12 +41,13 @@ if (process.stdout.isTTY) {
 	setInterval(() => {
 		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
 
-		if (!data.speed) {
+		if (!data.downloadspeed) {
 			logUpdate(pre + '\n\n');
 			return;
-		}
+		};
 
-		logUpdate(pre + speed());
+
+		logUpdate(pre + downloadspeed() + pre + uploadspeed());
 	}, 50);
 }
 
