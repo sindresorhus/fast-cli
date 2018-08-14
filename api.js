@@ -2,7 +2,7 @@
 /* eslint-env browser */
 const puppeteer = require('puppeteer');
 const Observable = require('zen-observable');
-const equals = require('deep-equal');
+const equals = require('deep-equal'); // TODO: Use `util.isDeepStrictEqual` when targeting Node.js 10
 
 function delay(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
