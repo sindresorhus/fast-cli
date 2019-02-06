@@ -1,6 +1,9 @@
 {
-	"name": "fast-cli",
-	"version": "2.2.0",
+	"name": "@yellowiki/fast-cli",
+	"publishConfig": {
+		"access": "public"
+	},
+	"version": "0.1.0",
 	"description": "Test your download speed using fast.com",
 	"license": "MIT",
 	"repository": "sindresorhus/fast-cli",
@@ -43,6 +46,7 @@
 	"dependencies": {
 		"chalk": "^2.1.0",
 		"deep-equal": "^1.0.1",
+		"delay": "^4.1.0",
 		"log-update": "^2.1.0",
 		"meow": "^5.0.0",
 		"ora": "^2.0.0",

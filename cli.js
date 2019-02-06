@@ -9,12 +9,12 @@ const api = require('./api');
 
 const cli = meow(`
 	Usage
-	  $ fast
+		$ fast
 		$ fast > file
 		$ fast --verbose
 `);
 
-// Check connection
+// Check connections
 dns.lookup('fast.com', err => {
 	if (err && err.code === 'ENOTFOUND') {
 		console.error(chalk.red('\n Please check your internet connection.\n'));
@@ -25,17 +25,18 @@ dns.lookup('fast.com', err => {
 let data = {};
 const spinner = ora();
 
+const uploadSpeed = () =>
+	(data.uploadSpeed ? s => s : chalk.dim)(chalk.gray(' / ') +
+		(data.uploadSpeed || '-') +
+		' ' +
+		chalk.dim(data.uploadUnit) + ' ↑');
+
 const speed = () =>
 	chalk[data.isDone ? 'green' : 'cyan'](
 		data.downloadSpeed +
 			' ' +
-			chalk.dim(data.downloadUnit) +
-			(cli.flags.verbose ? (
-				chalk.gray(' / ') +
-				(data.uploadSpeed || '-') +
-				' ' +
-				chalk.dim(data.uploadUnit)
-			) : '')
+			chalk.dim(data.downloadUnit) + ' ↓' +
+			(cli.flags.verbose ? uploadSpeed() : '')
 	) + '\n\n';
 
 function exit() {
@@ -64,17 +65,12 @@ if (process.stdout.isTTY) {
 		}
 
 		logUpdate(pre + speed());
-
-		if (!cli.flags.verbose && data.uploadSpeed) {
-			data.isDone = true;
-			exit();
-		}
 	}, 50);
 }
 
 (async () => {
 	try {
-		await api().forEach(result => {
+		await api({measureUpload: cli.flags.verbose}).forEach(result => {
 			data = result;
 		});
 

@@ -3,12 +3,9 @@
 const puppeteer = require('puppeteer');
 const Observable = require('zen-observable');
 const equals = require('deep-equal');
+const delay = require('delay');
 
-function delay(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function init(browser, page, observer) {
+async function init(browser, page, observer, opts) {
 	let prevResult;
 
 	/* eslint-disable no-constant-condition, no-await-in-loop */
@@ -32,11 +29,13 @@ async function init(browser, page, observer) {
 			observer.next(result);
 		}
 
-		if (result.isDone) {
+		if (result.isDone || (opts && !opts.measureUpload && result.uploadSpeed)) {
 			browser.close();
 			observer.complete();
 			return;
 		}
+
+		prevResult = result;
 
 		await delay(100);
 	}
@@ -44,7 +43,7 @@ async function init(browser, page, observer) {
 	/* eslint-enable no-constant-condition, no-await-in-loop */
 }
 
-module.exports = () =>
+module.exports = opts =>
 	new Observable(observer => {
 		// Wrapped in async IIFE as `new Observable` can't handle async function
 		(async () => {
@@ -52,6 +51,6 @@ module.exports = () =>
 			const page = await browser.newPage();
 
 			await page.goto('https://fast.com');
-			await init(browser, page, observer);
+			await init(browser, page, observer, opts);
 		})().catch(observer.error.bind(observer));
 	});
