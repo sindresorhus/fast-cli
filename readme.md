@@ -22,6 +22,7 @@ $ fast --help
   Usage
     $ fast
     $ fast > file
+    $ fast --verbose
 ```
 
 
