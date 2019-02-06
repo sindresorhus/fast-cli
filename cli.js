@@ -33,12 +33,14 @@ const uploadSpeed = () =>
 		? `${data.uploadSpeed} ${chalk.dim(data.uploadUnit)} ↑`
 		: chalk.dim("- Mbps ↑");
 
-const color = s => (data.isDone ? chalk.green(s) : chalk.cyan(s));
+const uColor = s => (data.isDone ? chalk.green(s) : chalk.cyan(s));
+
+const dColor = s => ((data.isDone || data.uploadSpeed) ? chalk.green(s) : chalk.cyan(s))
 
 const speedText = () =>
 	cli.flags.verbose
-		? `${color(downloadSpeed())} ${chalk.dim("/")} ${color(uploadSpeed())}`
-		: color(downloadSpeed());
+		? `${dColor(downloadSpeed())} ${chalk.dim("/")} ${uColor(uploadSpeed())}`
+		: dColor(downloadSpeed());
 
 const speed = () => speedText() + "\n\n";
 
