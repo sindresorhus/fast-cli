@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 /* eslint-env browser */
-const puppeteer = require('puppeteer');
-const Observable = require('zen-observable');
-const equals = require('deep-equal');
-const delay = require('delay');
+const puppeteer = require("puppeteer");
+const Observable = require("zen-observable");
+const equals = require("deep-equal");
+const delay = require("delay");
 
 async function init(browser, page, observer, opts) {
 	let prevResult;
@@ -15,12 +15,12 @@ async function init(browser, page, observer, opts) {
 			const $ = document.querySelector.bind(document);
 
 			return {
-				downloadSpeed: Number($('#speed-value').textContent),
-				uploadSpeed: Number($('#upload-value').textContent),
-				downloadUnit: $('#speed-units').textContent.trim(),
-				uploadUnit: $('#upload-units').textContent.trim(),
+				downloadSpeed: Number($("#speed-value").textContent),
+				uploadSpeed: Number($("#upload-value").textContent),
+				downloadUnit: $("#speed-units").textContent.trim(),
+				uploadUnit: $("#upload-units").textContent.trim(),
 				isDone: Boolean(
-					$('#speed-value.succeeded') && $('#upload-value.succeeded'),
+					$("#speed-value.succeeded") && $("#upload-value.succeeded")
 				)
 			};
 		});
@@ -47,10 +47,10 @@ module.exports = opts =>
 	new Observable(observer => {
 		// Wrapped in async IIFE as `new Observable` can't handle async function
 		(async () => {
-			const browser = await puppeteer.launch({args: ['--no-sandbox']});
+			const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
 			const page = await browser.newPage();
 
-			await page.goto('https://fast.com');
+			await page.goto("https://fast.com");
 			await init(browser, page, observer, opts);
 		})().catch(observer.error.bind(observer));
 	});
