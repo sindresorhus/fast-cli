@@ -2,7 +2,7 @@
 /* eslint-env browser */
 const puppeteer = require("puppeteer");
 const Observable = require("zen-observable");
-const equals = require("deep-equal");
+const equals = require("deep-equal"); // TODO: Use `util.isDeepStrictEqual` when targeting Node.js 10
 const delay = require("delay");
 
 async function init(browser, page, observer, opts) {
