@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-"use strict";
-const dns = require("dns");
-const meow = require("meow");
-const chalk = require("chalk");
-const logUpdate = require("log-update");
-const ora = require("ora");
-const api = require("./api");
+'use strict';
+const dns = require('dns');
+const meow = require('meow');
+const chalk = require('chalk');
+const logUpdate = require('log-update');
+const ora = require('ora');
+const api = require('./api');
 
 const cli = meow(`
 	Usage
@@ -15,9 +15,9 @@ const cli = meow(`
 `);
 
 // Check connections
-dns.lookup("fast.com", err => {
-	if (err && err.code === "ENOTFOUND") {
-		console.error(chalk.red("\n Please check your internet connection.\n"));
+dns.lookup('fast.com', err => {
+	if (err && err.code === 'ENOTFOUND') {
+		console.error(chalk.red('\n Please check your internet connection.\n'));
 		process.exit(1);
 	}
 });
@@ -29,20 +29,20 @@ const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
 
 const uploadSpeed = () =>
-	data.uploadSpeed
-		? `${data.uploadSpeed} ${chalk.dim(data.uploadUnit)} ↑`
-		: chalk.dim("- Mbps ↑");
+	data.uploadSpeed ?
+		`${data.uploadSpeed} ${chalk.dim(data.uploadUnit)} ↑` :
+		chalk.dim('- Mbps ↑');
 
 const uColor = s => (data.isDone ? chalk.green(s) : chalk.cyan(s));
 
-const dColor = s => ((data.isDone || data.uploadSpeed) ? chalk.green(s) : chalk.cyan(s))
+const dColor = s => ((data.isDone || data.uploadSpeed) ? chalk.green(s) : chalk.cyan(s));
 
 const speedText = () =>
-	cli.flags.verbose
-		? `${dColor(downloadSpeed())} ${chalk.dim("/")} ${uColor(uploadSpeed())}`
-		: dColor(downloadSpeed());
+	cli.flags.verbose ?
+		`${dColor(downloadSpeed())} ${chalk.dim('/')} ${uColor(uploadSpeed())}` :
+		dColor(downloadSpeed());
 
-const speed = () => speedText() + "\n\n";
+const speed = () => speedText() + '\n\n';
 
 function exit() {
 	if (process.stdout.isTTY) {
@@ -60,10 +60,10 @@ function exit() {
 
 if (process.stdout.isTTY) {
 	setInterval(() => {
-		const pre = "\n\n  " + chalk.gray.dim(spinner.frame());
+		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
 
 		if (!data.downloadSpeed) {
-			logUpdate(pre + "\n\n");
+			logUpdate(pre + '\n\n');
 			return;
 		}
 
@@ -73,7 +73,7 @@ if (process.stdout.isTTY) {
 
 (async () => {
 	try {
-		await api({ measureUpload: cli.flags.verbose }).forEach(result => {
+		await api({measureUpload: cli.flags.verbose}).forEach(result => {
 			data = result;
 		});
 
