@@ -6,7 +6,7 @@ test.cb('default', t => {
 	// TODO: Use `execa` here when the `spawn` API is done
 	const cp = childProcess.spawn('./cli.js', {stdio: 'inherit'});
 
-	cp.on('error', t.ifError);
+	cp.on('error', t.fail);
 
 	cp.on('close', code => {
 		t.is(code, 0);

@@ -9,14 +9,28 @@ const api = require('./api');
 
 const cli = meow(`
 	Usage
-		$ fast
-		$ fast > file
-		$ fast --verbose
-`);
+	  $ fast
+	  $ fast > file
+
+	Options
+	  --upload, -u  Measure upload speed in addition to download speed
+
+	Examples
+	  $ fast --upload > file && cat file
+	  17 Mbps
+	  4.4 Mbps
+`, {
+	flags: {
+		upload: {
+			type: 'boolean',
+			alias: 'u'
+		}
+	}
+});
 
 // Check connections
-dns.lookup('fast.com', err => {
-	if (err && err.code === 'ENOTFOUND') {
+dns.lookup('fast.com', error => {
+	if (error && error.code === 'ENOTFOUND') {
 		console.error(chalk.red('\n Please check your internet connection.\n'));
 		process.exit(1);
 	}
@@ -33,26 +47,28 @@ const uploadSpeed = () =>
 		`${data.uploadSpeed} ${chalk.dim(data.uploadUnit)} ↑` :
 		chalk.dim('- Mbps ↑');
 
-const uColor = s => (data.isDone ? chalk.green(s) : chalk.cyan(s));
+const uploadColor = string => (data.isDone ? chalk.green(string) : chalk.cyan(string));
 
-const dColor = s => ((data.isDone || data.uploadSpeed) ? chalk.green(s) : chalk.cyan(s));
+const downloadColor = string => ((data.isDone || data.uploadSpeed) ? chalk.green(string) : chalk.cyan(string));
 
 const speedText = () =>
-	cli.flags.verbose ?
-		`${dColor(downloadSpeed())} ${chalk.dim('/')} ${uColor(uploadSpeed())}` :
-		dColor(downloadSpeed());
+	cli.flags.upload ?
+		`${downloadColor(downloadSpeed())} ${chalk.dim('/')} ${uploadColor(uploadSpeed())}` :
+		downloadColor(downloadSpeed());
 
 const speed = () => speedText() + '\n\n';
 
 function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`\n\n    ${speed()}`);
-	} else if (cli.flags.verbose) {
-		console.log(
-			`${data.downloadSpeed} ${data.downloadUnit} / ${data.uploadSpeed} ${data.uploadUnit}`
-		);
 	} else {
-		console.log(`${data.downloadSpeed} ${data.downloadUnit}`);
+		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
+
+		if (cli.flags.upload) {
+			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
+		}
+
+		console.log(output);
 	}
 
 	process.exit();
@@ -73,7 +89,7 @@ if (process.stdout.isTTY) {
 
 (async () => {
 	try {
-		await api({measureUpload: cli.flags.verbose}).forEach(result => {
+		await api({measureUpload: cli.flags.upload}).forEach(result => {
 			data = result;
 		});
 
