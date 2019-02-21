@@ -2,6 +2,8 @@
 
 > Test your download and upload speed using [fast.com](https://fast.com)
 
+**[It's on Product Hunt](https://www.producthunt.com/posts/fast-cli-2)**
+
 ![](screenshot.gif)
 
 
