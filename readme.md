@@ -15,10 +15,6 @@ Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run the
 $ npm install --global fast-cli
 ```
 
-<a href="https://www.patreon.com/sindresorhus">
-	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
-
 
 ## Usage
 
@@ -47,8 +43,3 @@ $ fast --help
 ## Related
 
 - [speed-test](https://github.com/sindresorhus/speed-test) - Test your internet connection speed and ping using speedtest.net
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
