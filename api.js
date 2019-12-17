@@ -12,12 +12,17 @@ async function init(browser, page, observer, options) {
 	while (true) {
 		const result = await page.evaluate(() => {
 			const $ = document.querySelector.bind(document);
-
 			return {
 				downloadSpeed: Number($('#speed-value').textContent),
 				uploadSpeed: Number($('#upload-value').textContent),
 				downloadUnit: $('#speed-units').textContent.trim(),
 				uploadUnit: $('#upload-units').textContent.trim(),
+				latencyValue: Number($('#latency-value').textContent),
+				bufferBloatValue: Number($('#bufferbloat-value').textContent),
+				userLocationValue: $('#user-location').textContent.trim(),
+				userIPValue: $('#user-ip').textContent.trim(),
+				userISPValue: $('#user-isp').textContent.trim(),
+				serverLocations: $('#server-locations').textContent.trim(),
 				isDone: Boolean(
 					$('#speed-value.succeeded') && $('#upload-value.succeeded')
 				)

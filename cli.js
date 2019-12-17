@@ -47,16 +47,38 @@ const uploadSpeed = () =>
 		`${data.uploadSpeed} ${chalk.dim(data.uploadUnit)} ↑` :
 		chalk.dim('- Mbps ↑');
 
-const uploadColor = string => (data.isDone ? chalk.green(string) : chalk.cyan(string));
+const latency = () =>
+	data.latencyValue ?
+		`\n\nLatency - { Unloaded - ${data.latencyValue} ${chalk.dim('ms')} Loaded - ${data.bufferBloatValue} ${chalk.dim('ms')} }` :
+		`\n\n` + chalk.dim(`Latency - { Unloaded - 0 ms Loaded - 0 ms }`)
+
+const client = () =>
+	data.userLocationValue ?
+		`\n\n Client - ${data.userLocationValue} ${data.userIPValue} ${data.userISPValue}` :
+		`\n\n` + chalk.dim(`Client`)
+
+const server = () =>
+	data.serverLocations ?
+		`\n\n Server(s) - ${data.serverLocations}` :
+		`\n\n` + chalk.dim(`Server(s)`)
+
+const uploadColor = string => ((data.isDone || data.uploadSpeed) ? chalk.green(string) : chalk.cyan(string));
 
 const downloadColor = string => ((data.isDone || data.uploadSpeed) ? chalk.green(string) : chalk.cyan(string));
 
-const speedText = () =>
+const latencyColor = string => ((data.isDone || data.latencyValue) ? chalk.green(string) : chalk.magenta(string));
+
+const speedTextUpload = () =>
 	cli.flags.upload ?
 		`${downloadColor(downloadSpeed())} ${chalk.dim('/')} ${uploadColor(uploadSpeed())}` :
 		downloadColor(downloadSpeed());
 
-const speed = () => speedText() + '\n\n';
+const speedTextVerbose = () =>
+	cli.flags.verbose ?
+		` ${chalk.dim('/')} ${uploadColor(uploadSpeed())} ${latencyColor(latency())} ${uploadColor(client())} ${downloadColor(server())}` :
+		``
+
+const speed = () => speedTextUpload() + speedTextVerbose() + '\n\n';
 
 function exit() {
 	if (process.stdout.isTTY) {
