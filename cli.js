@@ -63,20 +63,20 @@ const speedText = () =>
 		downloadColor(downloadSpeed());
 
 const speed = () => speedText() + '\n\n';
+const getVerboseLog = () => `Client: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
 
 function exit() {
-	const verboseLog = `Client: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
-
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}\n${chalk.dim(verboseLog)}`);
+		logUpdate(`\n\n    ${speed()}${cli.flags.verbose ? `\n${chalk.dim(getVerboseLog())}` : ''}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
 		}
+
 		if (cli.flags.verbose) {
-			output += `\n${verboseLog}`;
+			output += `\n${getVerboseLog()}`;
 		}
 
 		console.log(output);
