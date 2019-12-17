@@ -14,6 +14,7 @@ const cli = meow(`
 
 	Options
 	  --upload, -u  Measure upload speed in addition to download speed
+	  --verbose     Get verbose logging on latency and request metadata
 
 	Examples
 	  $ fast --upload > file && cat file
@@ -24,9 +25,14 @@ const cli = meow(`
 		upload: {
 			type: 'boolean',
 			alias: 'u'
+		},
+		verbose: {
+			type: 'boolean'
 		}
 	}
 });
+
+cli.flags.upload = cli.flags.upload || cli.flags.verbose;
 
 // Check connections
 dns.lookup('fast.com', error => {
@@ -59,13 +65,18 @@ const speedText = () =>
 const speed = () => speedText() + '\n\n';
 
 function exit() {
+	const verboseLog = `Client: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
+
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}`);
+		logUpdate(`\n\n    ${speed()}\n${chalk.dim(verboseLog)}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
+		}
+		if (cli.flags.verbose) {
+			output += `\n${verboseLog}`;
 		}
 
 		console.log(output);
@@ -89,7 +100,7 @@ if (process.stdout.isTTY) {
 
 (async () => {
 	try {
-		await api({measureUpload: cli.flags.upload}).forEach(result => {
+		await api({measureUpload: cli.flags.upload, verbose: cli.flags.verbose}).forEach(result => {
 			data = result;
 		});
 

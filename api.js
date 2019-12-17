@@ -10,10 +10,10 @@ async function init(browser, page, observer, options) {
 
 	/* eslint-disable no-constant-condition, no-await-in-loop */
 	while (true) {
-		const result = await page.evaluate(() => {
+		const result = await page.evaluate(options => {
 			const $ = document.querySelector.bind(document);
 
-			return {
+			let stats = {
 				downloadSpeed: Number($('#speed-value').textContent),
 				uploadSpeed: Number($('#upload-value').textContent),
 				downloadUnit: $('#speed-units').textContent.trim(),
@@ -22,7 +22,28 @@ async function init(browser, page, observer, options) {
 					$('#speed-value.succeeded') && $('#upload-value.succeeded')
 				)
 			};
-		});
+
+			if (options.verbose) {
+				stats = {
+					...stats,
+					latency: Number($('#latency-value').textContent),
+					bufferbloat: Number($('#bufferbloat-value').textContent),
+					latencyUnit: $('#latency-units').textContent.trim(),
+					bufferbloatUnit: $('#bufferbloat-units').textContent.trim(),
+					client: {
+						location: $('#user-location').textContent.trim(),
+						ip: $('#user-ip').textContent.trim(),
+						isp: $('#user-isp').textContent.trim()
+					},
+					serverLocations: $('#server-locations').textContent.trim(),
+					isDone: stats.isDone && Boolean(
+						$('#latency-value.succeeded') && $('#bufferbloat-value.succeeded')
+					)
+				};
+			}
+
+			return stats;
+		}, options);
 
 		if (result.downloadSpeed > 0 && !equals(result, prevResult)) {
 			observer.next(result);
