@@ -50,17 +50,17 @@ const uploadSpeed = () =>
 const latency = () =>
 	data.latencyValue ?
 		`\n\nLatency - { Unloaded - ${data.latencyValue} ${chalk.dim('ms')} Loaded - ${data.bufferBloatValue} ${chalk.dim('ms')} }` :
-		`\n\n` + chalk.dim(`Latency - { Unloaded - 0 ms Loaded - 0 ms }`)
+		'\n\n' + chalk.dim('Latency - { Unloaded - 0 ms Loaded - 0 ms }');
 
 const client = () =>
 	data.userLocationValue ?
 		`\n\n Client - ${data.userLocationValue} ${data.userIPValue} ${data.userISPValue}` :
-		`\n\n` + chalk.dim(`Client`)
+		'\n\n' + chalk.dim('Client');
 
 const server = () =>
 	data.serverLocations ?
 		`\n\n Server(s) - ${data.serverLocations}` :
-		`\n\n` + chalk.dim(`Server(s)`)
+		'\n\n' + chalk.dim('Server(s)');
 
 const uploadColor = string => ((data.isDone || data.uploadSpeed) ? chalk.green(string) : chalk.cyan(string));
 
@@ -76,7 +76,7 @@ const speedTextUpload = () =>
 const speedTextVerbose = () =>
 	cli.flags.verbose ?
 		` ${chalk.dim('/')} ${uploadColor(uploadSpeed())} ${latencyColor(latency())} ${uploadColor(client())} ${downloadColor(server())}` :
-		``
+		'';
 
 const speed = () => speedTextUpload() + speedTextVerbose() + '\n\n';
 
