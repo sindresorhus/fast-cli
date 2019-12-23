@@ -63,7 +63,7 @@ const speedText = () =>
 		downloadColor(downloadSpeed());
 
 const speed = () => speedText() + '\n\n';
-const getVerboseLog = () => `Client: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
+const getVerboseLog = () => `Latency: ${data.latency}${data.latencyUnit} (unloaded) ${data.bufferbloat}${data.bufferbloatUnit} (loaded)\nClient: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
 
 function exit() {
 	if (process.stdout.isTTY) {
