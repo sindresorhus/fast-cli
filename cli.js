@@ -14,6 +14,7 @@ const cli = meow(`
 
 	Options
 	  --upload, -u  Measure upload speed in addition to download speed
+	  --oneline, -l  Reduce spacing and output on a single line
 
 	Examples
 	  $ fast --upload > file && cat file
@@ -24,6 +25,10 @@ const cli = meow(`
 		upload: {
 			type: 'boolean',
 			alias: 'u'
+		},
+		oneline: {
+			type: 'boolean',
+			alias: 'l'
 		}
 	}
 });
@@ -31,13 +36,20 @@ const cli = meow(`
 // Check connections
 dns.lookup('fast.com', error => {
 	if (error && error.code === 'ENOTFOUND') {
-		console.error(chalk.red('\n Please check your internet connection.\n'));
+		console.error(
+			chalk.red(
+				`${lineBreak(1)}${spacing(1)}Please check your internet connection.${lineBreak(1)}`
+			)
+		);
 		process.exit(1);
 	}
 });
 
 let data = {};
 const spinner = ora();
+
+const lineBreak = amount => (cli.flags.oneline ? '' : '\n'.repeat(amount));
+const spacing = amount => (cli.flags.oneline ? '' : ' '.repeat(amount));
 
 const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
@@ -56,11 +68,11 @@ const speedText = () =>
 		`${downloadColor(downloadSpeed())} ${chalk.dim('/')} ${uploadColor(uploadSpeed())}` :
 		downloadColor(downloadSpeed());
 
-const speed = () => speedText() + '\n\n';
+const speed = () => speedText() + lineBreak(2);
 
 function exit() {
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}`);
+		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
@@ -76,10 +88,10 @@ function exit() {
 
 if (process.stdout.isTTY) {
 	setInterval(() => {
-		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
+		const pre = lineBreak(2) + spacing(2) + chalk.gray.dim(spinner.frame());
 
 		if (!data.downloadSpeed) {
-			logUpdate(pre + '\n\n');
+			logUpdate(pre + lineBreak(2));
 			return;
 		}
 
