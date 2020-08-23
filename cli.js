@@ -26,7 +26,7 @@ const cli = meow(`
 			type: 'boolean',
 			alias: 'u'
 		},
-		'single-line': {
+		singleLine: {
 			type: 'boolean'
 		}
 	}
