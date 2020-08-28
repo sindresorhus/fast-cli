@@ -63,11 +63,11 @@ const speedText = () =>
 		downloadColor(downloadSpeed());
 
 const speed = () => speedText() + '\n\n';
-const getVerboseLog = () => `Latency: ${data.latency}${data.latencyUnit} (unloaded) ${data.bufferbloat}${data.bufferbloatUnit} (loaded)\nClient: ${data.client.location}  ${data.client.ip}  ${data.client.isp}\nServer(s): ${data.serverLocations}`;
+const getVerboseLog = () => `   Latency:  ${data.latency}${data.latencyUnit} ${chalk.dim('(unloaded)')}  ${data.bufferbloat}${data.bufferbloatUnit} ${chalk.dim('(loaded)')}\n    Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n Server(s):  ${data.serverLocations}`;
 
 function exit() {
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}${cli.flags.verbose ? `\n${chalk.dim(getVerboseLog())}` : ''}`);
+		logUpdate(`\n\n    ${speed()}${cli.flags.verbose ? `\n${getVerboseLog()}` : ''}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
