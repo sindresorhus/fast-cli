@@ -1,6 +1,6 @@
 {
 	"name": "fast-cli",
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"description": "Test your download and upload speed using fast.com",
 	"license": "MIT",
 	"repository": "sindresorhus/fast-cli",
