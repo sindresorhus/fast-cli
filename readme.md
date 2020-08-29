@@ -26,7 +26,7 @@ $ fast --help
     $ fast > file
 
   Options
-    --upload, -u  Measure upload speed in addition to download speed
+    --upload, -u   Measure upload speed in addition to download speed
     --single-line  Reduce spacing and output on a single line
 
   Examples
