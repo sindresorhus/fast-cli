@@ -27,7 +27,7 @@ $ fast --help
 
   Options
     --upload, -u  Measure upload speed in addition to download speed
-    --verbose     Get verbose logging on latency and request metadata
+    --verbose     Include info on latency and request metadata
 
   Examples
     $ fast --upload > file && cat file

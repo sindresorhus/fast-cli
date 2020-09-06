@@ -36,9 +36,8 @@ async function init(browser, page, observer, options) {
 						isp: $('#user-isp').textContent.trim()
 					},
 					serverLocations: $('#server-locations').textContent.trim(),
-					isDone: stats.isDone && Boolean(
-						$('#latency-value.succeeded') && $('#bufferbloat-value.succeeded')
-					)
+					isLatencyDone: Boolean($('#latency-value.succeeded')),
+					isBufferbloatDone: Boolean($('#bufferbloat-value.succeeded'))
 				};
 			}
 

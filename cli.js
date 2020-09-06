@@ -14,7 +14,7 @@ const cli = meow(`
 
 	Options
 	  --upload, -u  Measure upload speed in addition to download speed
-	  --verbose     Get verbose logging on latency and request metadata
+	  --verbose     Include info on latency and request metadata
 
 	Examples
 	  $ fast --upload > file && cat file
@@ -57,13 +57,24 @@ const uploadColor = string => (data.isDone ? chalk.green(string) : chalk.cyan(st
 
 const downloadColor = string => ((data.isDone || data.uploadSpeed) ? chalk.green(string) : chalk.cyan(string));
 
+const latencyColor = string => (data.isLatencyDone ? chalk.white(string) : chalk.cyan(string));
+const bufferbloatColor = string => (data.isBufferbloatDone ? chalk.white(string) : chalk.cyan(string));
+
 const speedText = () =>
 	cli.flags.upload ?
 		`${downloadColor(downloadSpeed())} ${chalk.dim('/')} ${uploadColor(uploadSpeed())}` :
 		downloadColor(downloadSpeed());
 
-const speed = () => speedText() + '\n\n';
-const getVerboseLog = () => `   Latency:  ${data.latency}${data.latencyUnit} ${chalk.dim('(unloaded)')}  ${data.bufferbloat}${data.bufferbloatUnit} ${chalk.dim('(loaded)')}\n    Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n Server(s):  ${data.serverLocations}`;
+const latencyText = () => `Latency:  ${latencyColor(data.latency + data.latencyUnit)} ${chalk.dim('(unloaded)')}  ${bufferbloatColor(data.bufferbloat + data.bufferbloatUnit)} ${chalk.dim('(loaded)')}`;
+
+const speed = () => {
+	let speedLog = speedText() + '\n\n';
+	if (cli.flags.verbose) {
+		speedLog += `    ${latencyText()}\n`;
+	}
+	return speedLog;
+}
+const getVerboseLog = () => `     Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n    Servers:  ${data.serverLocations}`;
 
 function exit() {
 	if (process.stdout.isTTY) {
@@ -76,7 +87,7 @@ function exit() {
 		}
 
 		if (cli.flags.verbose) {
-			output += `\n${getVerboseLog()}`;
+			output += `\n    ${latencyText()}\n${getVerboseLog()}`;
 		}
 
 		console.log(output);
