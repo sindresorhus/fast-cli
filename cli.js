@@ -89,12 +89,12 @@ const getVerboseLog = () => `${spacing(5)}Client:  ${data.client.location} ${dat
 
 function exit() {
 	if (process.stdout.isTTY) {
-		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}${cli.flags.verbose ? `\n${getVerboseLog()}` : ''}`);
+		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}${cli.flags.verbose ? `${lineBreak(1)}${getVerboseLog()}` : ''}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
-			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
+			output += `${cli.flags.singleLine ? ' / ' : '\n'}${data.uploadSpeed} ${data.uploadUnit}`;
 		}
 
 		if (cli.flags.verbose) {
