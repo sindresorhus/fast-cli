@@ -13,8 +13,9 @@ const cli = meow(`
 	  $ fast > file
 
 	Options
-	  --upload, -u  Measure upload speed in addition to download speed
-	  --verbose     Include info on latency and request metadata
+	  --upload, -u   Measure upload speed in addition to download speed
+	  --single-line  Reduce spacing and output to a single line
+	  --verbose      Include info on latency and request metadata
 
 	Examples
 	  $ fast --upload > file && cat file
@@ -25,6 +26,9 @@ const cli = meow(`
 		upload: {
 			type: 'boolean',
 			alias: 'u'
+		},
+		singleLine: {
+			type: 'boolean'
 		},
 		verbose: {
 			type: 'boolean'
@@ -37,13 +41,20 @@ cli.flags.upload = cli.flags.upload || cli.flags.verbose;
 // Check connections
 dns.lookup('fast.com', error => {
 	if (error && error.code === 'ENOTFOUND') {
-		console.error(chalk.red('\n Please check your internet connection.\n'));
+		console.error(
+			chalk.red(
+				`${lineBreak(1)}${spacing(1)}Please check your internet connection.${lineBreak(1)}`
+			)
+		);
 		process.exit(1);
 	}
 });
 
 let data = {};
 const spinner = ora();
+
+const lineBreak = amount => (cli.flags.singleLine ? '' : '\n'.repeat(amount));
+const spacing = amount => (cli.flags.singleLine ? '' : ' '.repeat(amount));
 
 const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
@@ -68,17 +79,17 @@ const speedText = () =>
 const latencyText = () => `Latency:  ${latencyColor(data.latency + data.latencyUnit)} ${chalk.dim('(unloaded)')}  ${bufferbloatColor(data.bufferbloat + data.bufferbloatUnit)} ${chalk.dim('(loaded)')}`;
 
 const speed = () => {
-	let speedLog = speedText() + '\n\n';
+	let speedLog = speedText() + lineBreak(2);
 	if (cli.flags.verbose) {
-		speedLog += `    ${latencyText()}\n`;
+		speedLog += `${cli.flags.singleLine ? '\n' : ''}${spacing(4)}${latencyText()}\n`;
 	}
 	return speedLog;
 }
-const getVerboseLog = () => `     Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n    Servers:  ${data.serverLocations}`;
+const getVerboseLog = () => `${spacing(5)}Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n${spacing(4)}Servers:  ${data.serverLocations}`;
 
 function exit() {
 	if (process.stdout.isTTY) {
-		logUpdate(`\n\n    ${speed()}${cli.flags.verbose ? `\n${getVerboseLog()}` : ''}`);
+		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}${cli.flags.verbose ? `\n${getVerboseLog()}` : ''}`);
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
@@ -87,7 +98,7 @@ function exit() {
 		}
 
 		if (cli.flags.verbose) {
-			output += `\n    ${latencyText()}\n${getVerboseLog()}`;
+			output += `\n${spacing(4)}${latencyText()}\n${getVerboseLog()}`;
 		}
 
 		console.log(output);
@@ -98,10 +109,10 @@ function exit() {
 
 if (process.stdout.isTTY) {
 	setInterval(() => {
-		const pre = '\n\n  ' + chalk.gray.dim(spinner.frame());
+		const pre = lineBreak(2) + spacing(2) + chalk.gray.dim(spinner.frame());
 
 		if (!data.downloadSpeed) {
-			logUpdate(pre + '\n\n');
+			logUpdate(pre + lineBreak(2));
 			return;
 		}
 
