@@ -83,8 +83,10 @@ const speed = () => {
 	if (cli.flags.verbose) {
 		speedLog += `${cli.flags.singleLine ? '\n' : ''}${spacing(4)}${latencyText()}\n`;
 	}
+
 	return speedLog;
-}
+};
+
 const getVerboseLog = () => `${spacing(5)}Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n${spacing(4)}Servers:  ${data.serverLocations}`;
 
 function exit() {
