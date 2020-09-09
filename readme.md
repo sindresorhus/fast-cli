@@ -1,11 +1,8 @@
-# fast-cli [![Build Status](https://travis-ci.org/sindresorhus/fast-cli.svg?branch=master)](https://travis-ci.org/sindresorhus/fast-cli)
+# fast-cli [![Build Status](https://travis-ci.com/sindresorhus/fast-cli.svg?branch=master)](https://travis-ci.com/github/sindresorhus/fast-cli)
 
 > Test your download and upload speed using [fast.com](https://fast.com)
 
-**[It's on Product Hunt](https://www.producthunt.com/posts/fast-cli-2)**
-
 ![](screenshot.gif)
-
 
 ## Install
 
@@ -14,7 +11,6 @@ Ensure you have [Node.js](https://nodejs.org) version 8+ installed. Then run the
 ```
 $ npm install --global fast-cli
 ```
-
 
 ## Usage
 
@@ -35,11 +31,9 @@ $ fast --help
     4.4 Mbps
 ```
 
-
 ##### Upload speed
 
 <img src="screenshot-upload.gif" width="500" height="260">
-
 
 ## Related
 
