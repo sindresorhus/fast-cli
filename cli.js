@@ -87,7 +87,7 @@ const speed = () => {
 	return speedLog;
 };
 
-const getVerboseLog = () => `${spacing(5)}Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n${spacing(4)}Servers:  ${data.serverLocations}`;
+const getVerboseLog = () => `${spacing(4)}${latencyText()}\n${spacing(5)}Client:  ${data.client.location} ${data.client.ip} ${data.client.isp}\n${spacing(4)}Servers:  ${data.serverLocations}`;
 
 function exit() {
 	if (process.stdout.isTTY) {
@@ -100,7 +100,7 @@ function exit() {
 		}
 
 		if (cli.flags.verbose) {
-			output += `\n${spacing(4)}${latencyText()}\n${getVerboseLog()}`;
+			output += `\n${getVerboseLog()}`;
 		}
 
 		console.log(output);
