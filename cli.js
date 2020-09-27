@@ -99,6 +99,8 @@ function exit() {
 			output += `${cli.flags.singleLine ? ' / ' : '\n'}${data.uploadSpeed} ${data.uploadUnit}`;
 		}
 
+		output += "\n"
+
 		if (cli.flags.verbose) {
 			output += `\n${getVerboseLog()}`;
 		}
