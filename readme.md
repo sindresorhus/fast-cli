@@ -1,4 +1,4 @@
-# fast-cli [![Build Status](https://travis-ci.com/sindresorhus/fast-cli.svg?branch=master)](https://travis-ci.com/github/sindresorhus/fast-cli)
+# fast-cli
 
 > Test your download and upload speed using [fast.com](https://fast.com)
 
@@ -34,6 +34,10 @@ $ fast --help
 ##### Upload speed
 
 <img src="screenshot-upload.gif" width="500" height="260">
+
+## Links
+
+- [Product Hunt submission](https://www.producthunt.com/posts/fast-cli-2)
 
 ## Related
 
