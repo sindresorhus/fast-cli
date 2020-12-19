@@ -55,7 +55,19 @@
 	},
 	"devDependencies": {
 		"ava": "^1.2.1",
+		"eslint-config-xo-react": "^0.23.0",
+		"eslint-plugin-react": "^7.21.5",
+		"eslint-plugin-react-hooks": "^4.2.0",
 		"execa": "^1.0.0",
 		"xo": "^0.24.0"
+	},
+	"xo": {
+		"extends": [
+			"xo-react"
+		],
+		"rules": {
+			"react/prop-types": "off",
+			"react/state-in-constructor": "off"
+		}
 	}
 }

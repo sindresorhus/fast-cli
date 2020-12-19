@@ -16,7 +16,7 @@ const ErrorMessage = ({text}) => (
 		<Text dimColor>
 			{text}
 		</Text>
-		<Newline count={2} />
+		<Newline count={2}/>
 	</Box>
 );
 
@@ -27,7 +27,7 @@ const Spacer = ({singleLine}) => {
 
 	return (
 		<Text>
-			<Newline count={1} />
+			<Newline count={1}/>
 		</Text>
 	);
 };
@@ -41,7 +41,7 @@ const DownloadSpeed = ({isDone, downloadSpeed, uploadSpeed, downloadUnit} = {}) 
 			{' '}
 			<Text dimColor>{downloadUnit}</Text>
 			{' '}
-			{'↓'}
+			↓
 		</Text>
 	);
 };
@@ -60,16 +60,16 @@ const UploadSpeed = ({isDone, uploadSpeed, uploadUnit} = {}) => {
 		);
 	}
 
-	return <Text color={color} dimColor>{' - Mbps ↑'}</Text>;
+	return <Text dimColor color={color}>{' - Mbps ↑'}</Text>;
 };
 
 const Speed = ({upload, data}) => upload ? (
 	<>
-		<DownloadSpeed {...data} />
+		<DownloadSpeed {...data}/>
 		<Text dimColor>{' / '}</Text>
-		<UploadSpeed {...data} />
+		<UploadSpeed {...data}/>
 	</>
-) : (<DownloadSpeed {...data} />);
+) : (<DownloadSpeed {...data}/>);
 
 const Fast = ({singleLine, upload}) => {
 	const [error, setError] = useState('');
@@ -96,36 +96,36 @@ const Fast = ({singleLine, upload}) => {
 	}, []);
 
 	useEffect(() => {
-	   if (data.isDone || !upload && data.uploadSpeed) {
+		if (data.isDone || (!upload && data.uploadSpeed)) {
 			setIsDone(true);
-	   }
+		}
 	}, [data.isDone, upload, data.uploadSpeed]);
 
 	useEffect(() => {
-	   if (isDone) {
+		if (isDone) {
 			exit();
-	   }
+		}
 	}, [isDone]);
 
 	if (error) {
-		return <ErrorMessage error={error} />;
+		return <ErrorMessage error={error}/>;
 	}
 
 	return (
 		<>
-			<Spacer singleLine={singleLine} />
+			<Spacer singleLine={singleLine}/>
 			<Box>
 				{!isDone && (
 					<>
 						{!singleLine && <Text>{' '}{' '}</Text>}
-						<Text color="cyan"><Spinner /></Text>
+						<Text color="cyan"><Spinner/></Text>
 						<Text>{' '}</Text>
 					</>
 				)}
 				{isDone && <Text>{' '}{' '}{' '}{' '}</Text>}
-				{Object.keys(data).length !== 0 && <Speed upload={upload} data={data} />}
+				{Object.keys(data).length !== 0 && <Speed upload={upload} data={data}/>}
 			</Box>
-			<Spacer singleLine={singleLine} />
+			<Spacer singleLine={singleLine}/>
 		</>
 	);
 };
