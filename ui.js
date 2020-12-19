@@ -16,8 +16,7 @@ const ErrorMessage = ({text}) => (
 		<Text dimColor>
 			{text}
 		</Text>
-		<br/>
-		<br/>
+		<Newline count={2} />
 	</Box>
 );
 
