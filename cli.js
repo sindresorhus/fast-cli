@@ -6,7 +6,6 @@ const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
-//tllakfdja
 
 const cli = meow(`
 	Usage
@@ -87,17 +86,16 @@ function exit() {
 	}
 
 	if (cli.flags.json) {
-		logUpdate( JSON.stringify(data, null, null) );
-	}
-	else if (cli.flags.jsonPretty) {
-		logUpdate( JSON.stringify(data, null, 4) );
-	}
-	else {
+		logUpdate(JSON.stringify(data, null, null));
+	} else if (cli.flags.jsonPretty) {
+		logUpdate(JSON.stringify(data, null, 4));
+	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
 		}
+
 		console.log(output);
 	}
 
