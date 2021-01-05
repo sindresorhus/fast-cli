@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
+const { clearCustomQueryHandlers } = require('puppeteer');
 
 const cli = meow(`
 	Usage
@@ -15,11 +16,16 @@ const cli = meow(`
 	Options
 	  --upload, -u   Measure upload speed in addition to download speed
 	  --single-line  Reduce spacing and output to a single line
+	  --json-pretty  Process output in human readible json format also forces single line 
+	  --json         Process output in json format also forces single line 
 
 	Examples
 	  $ fast --upload > file && cat file
 	  17 Mbps
 	  4.4 Mbps
+
+	  $ fast --upload --json-pretty 
+
 `, {
 	flags: {
 		upload: {
@@ -27,6 +33,12 @@ const cli = meow(`
 			alias: 'u'
 		},
 		singleLine: {
+			type: 'boolean'
+		},
+		json: {
+			type: 'boolean'
+		},
+		jsonPretty: {
 			type: 'boolean'
 		}
 	}
@@ -47,8 +59,8 @@ dns.lookup('fast.com', error => {
 let data = {};
 const spinner = ora();
 
-const lineBreak = amount => (cli.flags.singleLine ? '' : '\n'.repeat(amount));
-const spacing = amount => (cli.flags.singleLine ? '' : ' '.repeat(amount));
+const lineBreak = amount => (cli.flags.singleLine||cli.flags.json||cli.flags.jsonPretty ? '' : '\n'.repeat(amount));
+const spacing = amount => (cli.flags.singleLine||cli.flags.json||cli.flags.jsonPretty ? '' : ' '.repeat(amount));
 
 const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
@@ -72,7 +84,17 @@ const speed = () => speedText() + lineBreak(2);
 function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}`);
-	} else {
+	} 
+	
+	if(cli.flags.json){
+		let output = JSON.stringify(data, null, null)
+		console.log(output);
+	}
+	else if(cli.flags.jsonPretty){
+		let output = JSON.stringify(data, null, 4)
+		console.log(output);
+	}
+	else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
@@ -106,7 +128,16 @@ if (process.stdout.isTTY) {
 
 		exit();
 	} catch (error) {
-		console.error(error.message);
+		
+		if(cli.flags.json){
+			console.log(JSON.stringify(error, null, null));
+		}
+		else if(cli.flags.jsonPretty){
+			console.log(JSON.stringify(error, null, 4));
+		}
+		else{
+			console.error(error.message);
+		}
 		process.exit(1);
 	}
 })();
