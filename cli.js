@@ -88,11 +88,11 @@ function exit() {
 	
 	if(cli.flags.json){
 		let output = JSON.stringify(data, null, null)
-		console.log(output);
+		logUpdate(output);
 	}
 	else if(cli.flags.jsonPretty){
 		let output = JSON.stringify(data, null, 4)
-		console.log(output);
+		logUpdate(output);
 	}
 	else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
@@ -100,7 +100,6 @@ function exit() {
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
 		}
-
 		console.log(output);
 	}
 
@@ -128,16 +127,7 @@ if (process.stdout.isTTY) {
 
 		exit();
 	} catch (error) {
-		
-		if(cli.flags.json){
-			console.log(JSON.stringify(error, null, null));
-		}
-		else if(cli.flags.jsonPretty){
-			console.log(JSON.stringify(error, null, 4));
-		}
-		else{
-			console.error(error.message);
-		}
+		console.error(error.message);
 		process.exit(1);
 	}
 })();
