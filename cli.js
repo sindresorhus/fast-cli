@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const logUpdate = require('log-update');
 const ora = require('ora');
 const api = require('./api');
-const { clearCustomQueryHandlers } = require('puppeteer');
+//tllakfdja
 
 const cli = meow(`
 	Usage
@@ -59,8 +59,8 @@ dns.lookup('fast.com', error => {
 let data = {};
 const spinner = ora();
 
-const lineBreak = amount => (cli.flags.singleLine||cli.flags.json||cli.flags.jsonPretty ? '' : '\n'.repeat(amount));
-const spacing = amount => (cli.flags.singleLine||cli.flags.json||cli.flags.jsonPretty ? '' : ' '.repeat(amount));
+const lineBreak = amount => (cli.flags.singleLine || cli.flags.json || cli.flags.jsonPretty ? '' : '\n'.repeat(amount));
+const spacing = amount => (cli.flags.singleLine || cli.flags.json || cli.flags.jsonPretty ? '' : ' '.repeat(amount));
 
 const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
@@ -84,15 +84,13 @@ const speed = () => speedText() + lineBreak(2);
 function exit() {
 	if (process.stdout.isTTY) {
 		logUpdate(`${lineBreak(2)}${spacing(4)}${speed()}`);
-	} 
-	
-	if(cli.flags.json){
-		let output = JSON.stringify(data, null, null)
-		logUpdate(output);
 	}
-	else if(cli.flags.jsonPretty){
-		let output = JSON.stringify(data, null, 4)
-		logUpdate(output);
+
+	if (cli.flags.json) {
+		logUpdate( JSON.stringify(data, null, null) );
+	}
+	else if (cli.flags.jsonPretty) {
+		logUpdate( JSON.stringify(data, null, 4) );
 	}
 	else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
