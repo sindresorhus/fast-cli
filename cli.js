@@ -16,7 +16,7 @@ const cli = meow(`
 	Options
 	  --upload, -u   Measure upload speed in addition to download speed
 	  --single-line  Reduce spacing and output to a single line
-	  --json-pretty  Process output in human readible json format also forces single line 
+	  --json-pretty  Process output in human readable json format also forces single line 
 	  --json         Process output in json format also forces single line 
 
 	Examples
