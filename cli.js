@@ -89,7 +89,6 @@ function exit() {
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
 		}
-		
 		console.log(output);
 	}
 
