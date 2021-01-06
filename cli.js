@@ -15,7 +15,6 @@ const cli = meow(`
 	Options
 	  --upload, -u   Measure upload speed in addition to download speed
 	  --single-line  Reduce spacing and output to a single line
-	  --json-pretty  Process output in human readable json format also forces single line 
 	  --json         Process output in json format also forces single line 
 
 	Examples
@@ -35,9 +34,6 @@ const cli = meow(`
 			type: 'boolean'
 		},
 		json: {
-			type: 'boolean'
-		},
-		jsonPretty: {
 			type: 'boolean'
 		}
 	}
@@ -87,15 +83,13 @@ function exit() {
 
 	if (cli.flags.json) {
 		logUpdate(JSON.stringify(data, null, null));
-	} else if (cli.flags.jsonPretty) {
-		logUpdate(JSON.stringify(data, null, 4));
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
 		if (cli.flags.upload) {
 			output += `\n${data.uploadSpeed} ${data.uploadUnit}`;
 		}
-
+		
 		console.log(output);
 	}
 
