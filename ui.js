@@ -7,12 +7,16 @@ const {Box, Text, Newline, useApp} = require('ink');
 
 const api = require('./api');
 
+const FixedSpacer = ({size}) => (
+	<>{' '.repeat(size)}</>
+);
+
 const ErrorMessage = ({text}) => (
 	<Box>
 		<Text bold color="red">
 			›
+			<FixedSpacer size={1}/>
 		</Text>
-
 		<Text dimColor>
 			{text}
 		</Text>
@@ -38,9 +42,9 @@ const DownloadSpeed = ({isDone, downloadSpeed, uploadSpeed, downloadUnit} = {}) 
 	return (
 		<Text color={color}>
 			{downloadSpeed}
-			{' '}
+			<FixedSpacer size={1}/>
 			<Text dimColor>{downloadUnit}</Text>
-			{' '}
+			<FixedSpacer size={1}/>
 			↓
 		</Text>
 	);
@@ -82,16 +86,14 @@ const Fast = ({singleLine, upload}) => {
 			if (error && error.code === 'ENOTFOUND') {
 				setError('Please check your internet connection');
 				exit();
+			} else {
+				api({measureUpload: upload}).forEach(result => {
+					setData(result);
+				}).catch(() => {
+					setError(error.message);
+					exit();
+				});
 			}
-		});
-	}, []);
-
-	useEffect(() => {
-		api({measureUpload: upload}).forEach(result => {
-			setData(result);
-		}).catch(() => {
-			setError(error.message);
-			exit();
 		});
 	}, []);
 
@@ -105,10 +107,10 @@ const Fast = ({singleLine, upload}) => {
 		if (isDone) {
 			exit();
 		}
-	}, [isDone]);
+	}, [isDone, exit]);
 
 	if (error) {
-		return <ErrorMessage error={error}/>;
+		return <ErrorMessage text={error}/>;
 	}
 
 	return (
@@ -117,12 +119,12 @@ const Fast = ({singleLine, upload}) => {
 			<Box>
 				{!isDone && (
 					<>
-						{!singleLine && <Text>{' '}{' '}</Text>}
+						{!singleLine && <Text><FixedSpacer size={2}/></Text>}
 						<Text color="cyan"><Spinner/></Text>
-						<Text>{' '}</Text>
+						<Text><FixedSpacer size={1}/></Text>
 					</>
 				)}
-				{isDone && <Text>{' '}{' '}{' '}{' '}</Text>}
+				{isDone && <Text><FixedSpacer size={4}/></Text>}
 				{Object.keys(data).length !== 0 && <Speed upload={upload} data={data}/>}
 			</Box>
 			<Spacer singleLine={singleLine}/>

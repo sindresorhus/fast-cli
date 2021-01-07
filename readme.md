@@ -19,7 +19,7 @@ $ fast --help
 
   Usage
     $ fast
-    $ CI=true fast > file
+    $ fast > file
 
   Options
     --upload, -u   Measure upload speed in addition to download speed
