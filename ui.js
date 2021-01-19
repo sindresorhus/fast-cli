@@ -2,8 +2,8 @@
 const dns = require('dns');
 const React = require('react');
 const {useState, useEffect} = require('react');
-const Spinner = require('ink-spinner').default;
 const {Box, Text, Newline, useApp} = require('ink');
+const Spinner = require('ink-spinner').default;
 
 const api = require('./api');
 
