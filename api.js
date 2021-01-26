@@ -15,9 +15,15 @@ async function init(browser, page, observer, options) {
 
 			return {
 				downloadSpeed: Number($('#speed-value').textContent),
-				uploadSpeed: Number($('#upload-value').textContent),
 				downloadUnit: $('#speed-units').textContent.trim(),
+				downloaded: Number($('#down-mb-value').textContent.trim()),
+				uploadSpeed: Number($('#upload-value').textContent),
 				uploadUnit: $('#upload-units').textContent.trim(),
+				uploaded: Number($('#up-mb-value').textContent.trim()),
+				latency: Number($('#latency-value').textContent.trim()),
+				bufferBloat: Number($('#bufferbloat-value').textContent.trim()),
+				userLocation: $('#user-location').textContent.trim(),
+				userIp: $('#user-ip').textContent.trim(),
 				isDone: Boolean(
 					$('#speed-value.succeeded') && $('#upload-value.succeeded')
 				)

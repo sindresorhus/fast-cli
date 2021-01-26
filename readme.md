@@ -24,6 +24,7 @@ $ fast --help
   Options
     --upload, -u   Measure upload speed in addition to download speed
     --single-line  Reduce spacing and output to a single line
+    --json         JSON output
 
   Examples
     $ fast --upload > file && cat file
