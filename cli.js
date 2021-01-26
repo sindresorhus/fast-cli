@@ -15,14 +15,14 @@ const cli = meow(`
 	Options
 	  --upload, -u   Measure upload speed in addition to download speed
 	  --single-line  Reduce spacing and output to a single line
-	  --json         Process output in json format also forces single line 
+	  --json         JSON output
 
 	Examples
 	  $ fast --upload > file && cat file
 	  17 Mbps
 	  4.4 Mbps
 
-	  $ fast --upload --json-pretty 
+	  $ fast --upload --json
 
 `, {
 	flags: {
@@ -54,8 +54,8 @@ dns.lookup('fast.com', error => {
 let data = {};
 const spinner = ora();
 
-const lineBreak = amount => (cli.flags.singleLine || cli.flags.json || cli.flags.jsonPretty ? '' : '\n'.repeat(amount));
-const spacing = amount => (cli.flags.singleLine || cli.flags.json || cli.flags.jsonPretty ? '' : ' '.repeat(amount));
+const lineBreak = amount => (cli.flags.singleLine || cli.flags.json ? '' : '\n'.repeat(amount));
+const spacing = amount => (cli.flags.singleLine || cli.flags.json ? '' : ' '.repeat(amount));
 
 const downloadSpeed = () =>
 	`${data.downloadSpeed} ${chalk.dim(data.downloadUnit)} ↓`;
@@ -82,7 +82,7 @@ function exit() {
 	}
 
 	if (cli.flags.json) {
-		logUpdate(JSON.stringify(data, null, null));
+		logUpdate(JSON.stringify(data));
 	} else {
 		let output = `${data.downloadSpeed} ${data.downloadUnit}`;
 
