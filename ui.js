@@ -83,17 +83,21 @@ const Fast = ({singleLine, upload}) => {
 
 	useEffect(() => {
 		dns.lookup('fast.com', error => {
-			if (error && error.code === 'ENOTFOUND') {
-				setError('Please check your internet connection');
+			if (error) {
+				setError(error.code === 'ENOTFOUND' ?
+					'Please check your internet connection' :
+					`Something happened ${JSON.stringify(error)}`
+				);
 				exit();
-			} else {
-				api({measureUpload: upload}).forEach(result => {
-					setData(result);
-				}).catch(() => {
-					setError(error.message);
-					exit();
-				});
+				return;
 			}
+
+			api({measureUpload: upload}).forEach(result => {
+				setData(result);
+			}).catch(error2 => {
+				setError(error2.message);
+				exit();
+			});
 		});
 	}, []);
 
