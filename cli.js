@@ -15,6 +15,7 @@ const cli = meow(`
 	Options
 	  --upload, -u   Measure upload speed in addition to download speed
 	  --single-line  Reduce spacing and output to a single line
+	  --puppeteer-executable Specify execitable path for puppetter
 
 	Examples
 	  $ fast --upload > file && cat file
@@ -28,7 +29,11 @@ const cli = meow(`
 		},
 		singleLine: {
 			type: 'boolean'
+		},
+		puppeteerExecutable: {
+			type: 'string'
 		}
+
 	}
 });
 
@@ -100,7 +105,10 @@ if (process.stdout.isTTY) {
 
 (async () => {
 	try {
-		await api({measureUpload: cli.flags.upload}).forEach(result => {
+		await api({
+			puppeteerExecutable: cli.flags.puppeteerExecutable,
+			measureUpload: cli.flags.upload
+		}).forEach(result => {
 			data = result;
 		});
 

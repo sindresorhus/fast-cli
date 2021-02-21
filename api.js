@@ -45,7 +45,10 @@ module.exports = options => (
 	new Observable(observer => {
 		// Wrapped in async IIFE as `new Observable` can't handle async function
 		(async () => {
-			const browser = await puppeteer.launch({args: ['--no-sandbox']});
+			const browser = await puppeteer.launch({
+				executablePath: options.puppeteerExecutable,
+				args: ['--no-sandbox']
+			});
 			const page = await browser.newPage();
 			await page.goto('https://fast.com');
 			await init(browser, page, observer, options);
