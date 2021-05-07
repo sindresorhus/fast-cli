@@ -43,18 +43,30 @@
 		"mbps"
 	],
 	"dependencies": {
-		"chalk": "^2.4.2",
 		"deep-equal": "^1.0.1",
 		"delay": "^4.1.0",
-		"log-update": "^2.3.0",
+		"import-jsx": "^4.0.0",
+		"ink": "^3.0.8",
+		"ink-spinner": "^4.0.1",
 		"meow": "^5.0.0",
-		"ora": "^3.1.0",
 		"puppeteer": "^1.12.1",
+		"react": "^17.0.1",
 		"zen-observable": "^0.8.13"
 	},
 	"devDependencies": {
 		"ava": "^1.2.1",
+		"eslint-config-xo-react": "^0.23.0",
+		"eslint-plugin-react": "^7.21.5",
+		"eslint-plugin-react-hooks": "^4.2.0",
 		"execa": "^1.0.0",
 		"xo": "^0.24.0"
+	},
+	"xo": {
+		"extends": [
+			"xo-react"
+		],
+		"rules": {
+			"react/prop-types": "off"
+		}
 	}
 }
