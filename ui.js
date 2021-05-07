@@ -1,11 +1,10 @@
 'use strict';
-const dns = require('dns');
+const {promises: dns} = require('dns');
 const React = require('react');
 const {useState, useEffect} = require('react');
 const {Box, Text, Newline, useApp} = require('ink');
 const Spinner = require('ink-spinner').default;
-
-const api = require('./api');
+const api = require('./api.js');
 
 const FixedSpacer = ({size}) => (
 	<>{' '.repeat(size)}</>
@@ -82,8 +81,10 @@ const Fast = ({singleLine, upload}) => {
 	const {exit} = useApp();
 
 	useEffect(() => {
-		dns.lookup('fast.com', error => {
-			if (error) {
+		(async () => {
+			try {
+				await dns.lookup('fast.com');
+			} catch (error) {
 				setError(error.code === 'ENOTFOUND' ?
 					'Please check your internet connection' :
 					`Something happened ${JSON.stringify(error)}`
@@ -92,14 +93,15 @@ const Fast = ({singleLine, upload}) => {
 				return;
 			}
 
+			// eslint-disable-next-line unicorn/no-array-for-each
 			api({measureUpload: upload}).forEach(result => {
 				setData(result);
-			}).catch(error2 => {
-				setError(error2.message);
+			}).catch(error_ => { // eslint-disable-line promise/prefer-await-to-then
+				setError(error_.message);
 				exit();
 			});
-		});
-	}, []);
+		})();
+	}, [exit, upload]);
 
 	useEffect(() => {
 		if (data.isDone || (!upload && data.uploadSpeed)) {
@@ -129,7 +131,7 @@ const Fast = ({singleLine, upload}) => {
 					</>
 				)}
 				{isDone && <Text><FixedSpacer size={4}/></Text>}
-				{Object.keys(data).length !== 0 && <Speed upload={upload} data={data}/>}
+				{Object.keys(data).length > 0 && <Speed upload={upload} data={data}/>}
 			</Box>
 			<Spacer singleLine={singleLine}/>
 		</>

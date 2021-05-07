@@ -5,6 +5,8 @@ const importJsx = require('import-jsx');
 const React = require('react');
 const {render} = require('ink');
 
+// Note to self: This cannot be ESM until https://github.com/vadimdemedes/import-jsx/issues/15 is fixed.
+
 const ui = importJsx('./ui');
 
 const cli = meow(`
