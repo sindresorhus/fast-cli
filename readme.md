@@ -9,7 +9,7 @@
 Ensure you have [Node.js](https://nodejs.org) version 12.20+ installed. Then run the following:
 
 ```
-$ npm install --global fast-cli
+$ npm i -g fast-cli
 ```
 
 ## Usage
