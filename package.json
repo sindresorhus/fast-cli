@@ -47,11 +47,11 @@
 	"dependencies": {
 		"delay": "^5.0.0",
 		"import-jsx": "^4.0.0",
-		"ink": "^3.0.8",
-		"ink-spinner": "^4.0.2",
+		"ink": "^3.2.0",
+		"ink-spinner": "^4.0.3",
 		"meow": "^9.0.0",
-		"puppeteer": "^9.1.1",
-		"react": "^16.8.0",
+		"puppeteer": "^13.0.0",
+		"react": "^17.0.2",
 		"zen-observable": "^0.8.15"
 	},
 	"devDependencies": {
