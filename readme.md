@@ -35,6 +35,24 @@ $ fast --help
 
 <img src="screenshot-upload.gif" width="500" height="260">
 
+## Docker
+
+### Build the image:
+
+```
+docker buildx build -t fast-cli .
+```
+
+### Usage examples:
+
+```
+# Run a download test
+docker run --rm fast-cli
+
+# Run download+upload test
+docker run --rm fast-cli fast -u
+```
+
 ## Links
 
 - [Product Hunt submission](https://www.producthunt.com/posts/fast-cli-2)
