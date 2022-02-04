@@ -44,7 +44,7 @@ const main = async () => {
 	const app = render(React.createElement(ui, {
 		singleLine: cli.flags.singleLine,
 		upload: cli.flags.upload,
-		json: cli.flags.json,
+		json: cli.flags.json
 	}));
 
 	await app.waitUntilExit();

@@ -18,7 +18,6 @@ async function init(browser, page, observer, options) {
 				uploadSpeed: Number($('#upload-value').textContent),
 				downloadUnit: $('#speed-units').textContent.trim(),
 				downloaded: Number($('#down-mb-value').textContent.trim()),
-				uploadSpeed: Number($('#upload-value').textContent),
 				uploadUnit: $('#upload-units').textContent.trim(),
 				uploaded: Number($('#up-mb-value').textContent.trim()),
 				latency: Number($('#latency-value').textContent.trim()),

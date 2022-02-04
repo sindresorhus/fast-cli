@@ -78,12 +78,12 @@ const SpeedJsonOutput = ({data}) => {
 	if (Object.keys(data).length === 0) {
 		return (
 			<Text color="cyan"><Spinner/></Text>
-		)
+		);
 	}
 
 	return (
 		<Text>{JSON.stringify(data, null, 2)}</Text>
-	)
+	);
 };
 
 const Fast = ({singleLine, upload, json}) => {
@@ -108,9 +108,10 @@ const Fast = ({singleLine, upload, json}) => {
 			// eslint-disable-next-line unicorn/no-array-for-each
 			api({measureUpload: upload}).forEach(result => {
 				if (!upload) {
-					delete result['uploaded'];
-					delete result['uploadUnit'];
+					delete result.uploaded;
+					delete result.uploadUnit;
 				}
+
 				setData(result);
 			}).catch(error_ => { // eslint-disable-line promise/prefer-await-to-then
 				setError(error_.message);
@@ -136,7 +137,7 @@ const Fast = ({singleLine, upload, json}) => {
 	}
 
 	if (json) {
-		return <SpeedJsonOutput data={data} />;
+		return <SpeedJsonOutput data={data}/>;
 	}
 
 	return (
