@@ -5,7 +5,7 @@ const {useState, useEffect} = require('react');
 const {Box, Text, Newline, useApp, useStdout} = require('ink');
 const Spinner = require('ink-spinner').default;
 const api = require('./api.js');
-const {convertToMpbs} = require('./utils.js');
+const {convertToMpbs} = require('./utilities.js');
 
 const FixedSpacer = ({size}) => (
 	<>{' '.repeat(size)}</>
@@ -129,7 +129,7 @@ const Fast = ({singleLine, upload, json}) => {
 					delete data.uploadUnit;
 				}
 
-				write(JSON.stringify(data, null, 2));
+				write(JSON.stringify(data, undefined, '\t'));
 			}
 
 			exit();
