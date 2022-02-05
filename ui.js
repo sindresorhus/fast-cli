@@ -5,6 +5,7 @@ const {useState, useEffect} = require('react');
 const {Box, Text, Newline, useApp, useStdout} = require('ink');
 const Spinner = require('ink-spinner').default;
 const api = require('./api.js');
+const {convertToMpbs} = require('./utils.js');
 
 const FixedSpacer = ({size}) => (
 	<>{' '.repeat(size)}</>
@@ -120,12 +121,20 @@ const Fast = ({singleLine, upload, json}) => {
 		if (isDone) {
 			if (json) {
 				delete data.isDone;
-				delete data.uploadUnit;
+				data.downloadSpeed = convertToMpbs(data.downloadSpeed, data.downloadUnit);
 				delete data.downloadUnit;
+
+				if (upload) {
+					data.uploadSpeed = convertToMpbs(data.uploadSpeed, data.uploadUnit);
+					delete data.uploadUnit;
+				}
+
 				write(JSON.stringify(data, null, 2));
 			}
+
 			exit();
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDone, exit]);
 
 	if (error) {
@@ -133,7 +142,7 @@ const Fast = ({singleLine, upload, json}) => {
 	}
 
 	if (json) {
-		return <></>;
+		return null;
 	}
 
 	return (
