@@ -2,9 +2,10 @@
 const {promises: dns} = require('dns');
 const React = require('react');
 const {useState, useEffect} = require('react');
-const {Box, Text, Newline, useApp} = require('ink');
+const {Box, Text, Newline, useApp, useStdout} = require('ink');
 const Spinner = require('ink-spinner').default;
 const api = require('./api.js');
+const {convertToMpbs} = require('./utils.js');
 
 const FixedSpacer = ({size}) => (
 	<>{' '.repeat(size)}</>
@@ -74,11 +75,12 @@ const Speed = ({upload, data}) => upload ? (
 	</>
 ) : (<DownloadSpeed {...data}/>);
 
-const Fast = ({singleLine, upload}) => {
+const Fast = ({singleLine, upload, json}) => {
 	const [error, setError] = useState('');
 	const [data, setData] = useState({});
 	const [isDone, setIsDone] = useState(false);
 	const {exit} = useApp();
+	const {write} = useStdout();
 
 	useEffect(() => {
 		(async () => {
@@ -95,6 +97,12 @@ const Fast = ({singleLine, upload}) => {
 
 			// eslint-disable-next-line unicorn/no-array-for-each
 			api({measureUpload: upload}).forEach(result => {
+				if (!upload) {
+					delete result.uploaded;
+					delete result.uploadUnit;
+					delete result.uploadSpeed;
+				}
+
 				setData(result);
 			}).catch(error_ => { // eslint-disable-line promise/prefer-await-to-then
 				setError(error_.message);
@@ -111,12 +119,30 @@ const Fast = ({singleLine, upload}) => {
 
 	useEffect(() => {
 		if (isDone) {
+			if (json) {
+				delete data.isDone;
+				data.downloadSpeed = convertToMpbs(data.downloadSpeed, data.downloadUnit);
+				delete data.downloadUnit;
+
+				if (upload) {
+					data.uploadSpeed = convertToMpbs(data.uploadSpeed, data.uploadUnit);
+					delete data.uploadUnit;
+				}
+
+				write(JSON.stringify(data, null, 2));
+			}
+
 			exit();
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDone, exit]);
 
 	if (error) {
 		return <ErrorMessage text={error}/>;
+	}
+
+	if (json) {
+		return null;
 	}
 
 	return (

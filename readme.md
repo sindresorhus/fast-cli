@@ -29,6 +29,8 @@ $ fast --help
     $ fast --upload > file && cat file
     17 Mbps
     4.4 Mbps
+
+    $ fast --upload --json
 ```
 
 ##### Upload speed

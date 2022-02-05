@@ -22,7 +22,8 @@
 	"files": [
 		"cli.js",
 		"api.js",
-		"ui.js"
+		"ui.js",
+		"utils.js"
 	],
 	"keywords": [
 		"cli-app",
