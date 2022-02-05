@@ -30,7 +30,7 @@ $ fast --help
     17 Mbps
     4.4 Mbps
 
-    fast --upload --json
+    $ fast --upload --json
 ```
 
 ##### Upload speed

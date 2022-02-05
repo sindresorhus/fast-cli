@@ -2,7 +2,7 @@
 const {promises: dns} = require('dns');
 const React = require('react');
 const {useState, useEffect} = require('react');
-const {Box, Text, Newline, useApp} = require('ink');
+const {Box, Text, Newline, useApp, useStdout} = require('ink');
 const Spinner = require('ink-spinner').default;
 const api = require('./api.js');
 
@@ -74,23 +74,12 @@ const Speed = ({upload, data}) => upload ? (
 	</>
 ) : (<DownloadSpeed {...data}/>);
 
-const SpeedJsonOutput = ({data}) => {
-	if (Object.keys(data).length === 0) {
-		return (
-			<Text color="cyan"><Spinner/></Text>
-		);
-	}
-
-	return (
-		<Text>{JSON.stringify(data, null, 2)}</Text>
-	);
-};
-
 const Fast = ({singleLine, upload, json}) => {
 	const [error, setError] = useState('');
 	const [data, setData] = useState({});
 	const [isDone, setIsDone] = useState(false);
 	const {exit} = useApp();
+	const {write} = useStdout();
 
 	useEffect(() => {
 		(async () => {
@@ -110,6 +99,7 @@ const Fast = ({singleLine, upload, json}) => {
 				if (!upload) {
 					delete result.uploaded;
 					delete result.uploadUnit;
+					delete result.uploadSpeed;
 				}
 
 				setData(result);
@@ -128,6 +118,12 @@ const Fast = ({singleLine, upload, json}) => {
 
 	useEffect(() => {
 		if (isDone) {
+			if (json) {
+				delete data.isDone;
+				delete data.uploadUnit;
+				delete data.downloadUnit;
+				write(JSON.stringify(data, null, 2));
+			}
 			exit();
 		}
 	}, [isDone, exit]);
@@ -137,7 +133,7 @@ const Fast = ({singleLine, upload, json}) => {
 	}
 
 	if (json) {
-		return <SpeedJsonOutput data={data}/>;
+		return <></>;
 	}
 
 	return (
