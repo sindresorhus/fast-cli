@@ -12,6 +12,8 @@ Ensure you have [Node.js](https://nodejs.org) version 12.20+ installed. Then run
 npm install --global fast-cli
 ```
 
+*This project uses Puppeteer under the hood. Most [install issues](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md) are releated to that.*
+
 ## Usage
 
 ```
