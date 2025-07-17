@@ -163,7 +163,7 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json}) => {
 				downloadSpeed: convertToMbps(data.downloadSpeed!, data.downloadUnit!),
 				uploadSpeed: upload ? convertToMbps(data.uploadSpeed!, data.uploadUnit!) : undefined,
 				downloadUnit: undefined,
-				uploadUnit: upload ? undefined : data.uploadUnit,
+				uploadUnit: upload ? data.uploadUnit : undefined,
 				isDone: undefined, // Explicitly omit 'isDone'
 			};
 
