@@ -52,6 +52,8 @@ fast --upload --json
 {
 	"downloadSpeed": 52,
 	"uploadSpeed": 64,
+	"downloadUnit": "Mbps",
+	"uploadUnit": "Mbps",
 	"downloaded": 270,
 	"uploaded": 290,
 	"latency": 9,
