@@ -6,7 +6,7 @@
 
 ## Install
 
-Ensure you have [Node.js](https://nodejs.org) 18+ installed. Then run the following:
+Ensure you have [Node.js](https://nodejs.org) 20+ installed. Then run the following:
 
 ```sh
 npm install --global fast-cli
@@ -36,11 +36,11 @@ $ fast --help
     $ fast --upload --json
 ```
 
-##### Upload speed
+### Upload speed
 
 <img src="screenshot-upload.gif" width="500" height="260">
 
-##### JSON output
+### JSON output
 
 The speeds are in Mbps.
 

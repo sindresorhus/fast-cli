@@ -1,44 +1,31 @@
 import {isDeepStrictEqual} from 'node:util';
 import puppeteer from 'puppeteer';
 import {delay} from 'unicorn-magic';
+import {type SpeedData, type SpeedUnit} from './types.js';
 
 type Options = {
 	measureUpload?: boolean;
 };
 
-type Result = {
-	downloadSpeed: number;
-	uploadSpeed: number;
-	downloadUnit: string;
-	downloaded: number;
-	uploadUnit: string;
-	uploaded: number;
-	latency: number;
-	bufferBloat: number;
-	userLocation: string;
-	userIp: string;
-	isDone: boolean;
-};
-
-async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGenerator<Result, void, undefined> {
-	let previousResult: Result | undefined;
+async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGenerator<SpeedData, void, undefined> {
+	let previousResult: SpeedData | undefined;
 
 	while (true) {
 		// eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-loop-func
-		const result: Result = await page.evaluate((): Result => {
+		const result = await page.evaluate(() => {
 			const $ = document.querySelector.bind(document);
 
 			return {
-				downloadSpeed: Number($('#speed-value')?.textContent),
-				uploadSpeed: Number($('#upload-value')?.textContent),
-				downloadUnit: $('#speed-units')?.textContent?.trim()!,
-				downloaded: Number($('#down-mb-value')?.textContent?.trim()),
-				uploadUnit: $('#upload-units')?.textContent?.trim()!,
-				uploaded: Number($('#up-mb-value')?.textContent?.trim()),
-				latency: Number($('#latency-value')?.textContent?.trim()),
-				bufferBloat: Number($('#bufferbloat-value')?.textContent?.trim()),
-				userLocation: $('#user-location')?.textContent?.trim()!,
-				userIp: $('#user-ip')?.textContent?.trim()!,
+				downloadSpeed: Number($('#speed-value')?.textContent) || 0,
+				uploadSpeed: Number($('#upload-value')?.textContent) || 0,
+				downloadUnit: ($('#speed-units')?.textContent?.trim() ?? 'Mbps') as SpeedUnit,
+				downloaded: Number($('#down-mb-value')?.textContent?.trim()) || 0,
+				uploadUnit: ($('#upload-units')?.textContent?.trim() ?? 'Mbps') as SpeedUnit,
+				uploaded: Number($('#up-mb-value')?.textContent?.trim()) || 0,
+				latency: Number($('#latency-value')?.textContent?.trim()) || 0,
+				bufferBloat: Number($('#bufferbloat-value')?.textContent?.trim()) || 0,
+				userLocation: $('#user-location')?.textContent?.trim() ?? '',
+				userIp: $('#user-ip')?.textContent?.trim() ?? '',
 				isDone: Boolean($('#speed-value.succeeded') && $('#upload-value.succeeded')),
 			};
 		});
@@ -58,8 +45,11 @@ async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGen
 	}
 }
 
-export default async function * api(options?: Options): AsyncGenerator<Result, void, undefined> {
-	const browser = await puppeteer.launch({args: ['--no-sandbox']});
+export default async function * api(options?: Options): AsyncGenerator<SpeedData, void, undefined> {
+	const browser = await puppeteer.launch({
+		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+		headless: true,
+	});
 	const page = await browser.newPage();
 	await page.goto('https://fast.com');
 

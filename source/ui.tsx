@@ -1,4 +1,5 @@
 import dns from 'node:dns/promises';
+import process from 'node:process';
 import React, {useState, useEffect} from 'react';
 import {
 	Box, Text, Newline, useApp, useStdout,
@@ -6,7 +7,7 @@ import {
 import Spinner from 'ink-spinner';
 import api from './api.js';
 import {convertToMbps} from './utilities.js';
-import {type SpeedUnit} from './types.js';
+import {type SpeedData} from './types.js';
 
 type SpacerProperties = {
 	readonly size: number;
@@ -35,31 +36,14 @@ type SpeedProperties = {
 	readonly singleLine?: boolean;
 };
 
-const Spacer: React.FC<SpeedProperties> = ({singleLine}) => {
-	if (singleLine) {
-		return null;
-	}
+const Spacer: React.FC<SpeedProperties> = ({singleLine}) => (
+	singleLine ? null : <Text><Newline count={1}/></Text>
+);
 
-	return (
-		<Text>
-			<Newline count={1}/>
-		</Text>
-	);
-};
+type PartialSpeedData = Partial<SpeedData>;
 
-type SpeedData = {
-	readonly isDone?: boolean;
-	readonly downloadSpeed?: number;
-	readonly uploadSpeed?: number;
-	readonly downloadUnit?: SpeedUnit;
-	readonly uploadUnit?: SpeedUnit;
-};
-
-type DownloadSpeedProperties = SpeedData;
-
-const DownloadSpeed: React.FC<DownloadSpeedProperties> = ({isDone, downloadSpeed, uploadSpeed, downloadUnit}) => {
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-	const color = (isDone || uploadSpeed) ? 'green' : 'cyan';
+const DownloadSpeed: React.FC<PartialSpeedData> = ({isDone, downloadSpeed, uploadSpeed, downloadUnit}) => {
+	const color = (isDone ?? uploadSpeed) ? 'green' : 'cyan';
 
 	return (
 		<Text color={color}>
@@ -72,9 +56,7 @@ const DownloadSpeed: React.FC<DownloadSpeedProperties> = ({isDone, downloadSpeed
 	);
 };
 
-type UploadSpeedProperties = SpeedData;
-
-const UploadSpeed: React.FC<UploadSpeedProperties> = ({isDone, uploadSpeed, uploadUnit}) => {
+const UploadSpeed: React.FC<PartialSpeedData> = ({isDone, uploadSpeed, uploadUnit}) => {
 	const color = isDone ? 'green' : 'cyan';
 
 	if (uploadSpeed) {
@@ -93,7 +75,7 @@ const UploadSpeed: React.FC<UploadSpeedProperties> = ({isDone, uploadSpeed, uplo
 
 type SpeedComponentProperties = {
 	readonly upload?: boolean;
-	readonly data: SpeedData;
+	readonly data: PartialSpeedData;
 };
 
 const Speed: React.FC<SpeedComponentProperties> = ({upload, data}) => upload ? (
@@ -112,7 +94,7 @@ type FastProperties = {
 
 const Ui: React.FC<FastProperties> = ({singleLine, upload, json}) => {
 	const [error, setError] = useState('');
-	const [data, setData] = useState<SpeedData>({});
+	const [data, setData] = useState<PartialSpeedData>({});
 	const [isDone, setIsDone] = useState(false);
 	const {exit} = useApp();
 	const {write} = useStdout();
@@ -124,22 +106,19 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json}) => {
 			} catch (error: any) {
 				setError(error.code === 'ENOTFOUND'
 					? 'Please check your internet connection'
-					: `Something happened ${JSON.stringify(error)}`,
+					: 'Failed to connect to fast.com',
 				);
-
 				exit();
-
 				return;
 			}
 
 			try {
 				for await (const result of api({measureUpload: upload})) {
-					// @ts-expect-error - Don't have time to look into it.
 					setData(result);
 				}
 			} catch (error: unknown) {
-				// eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-				setError((error as Error).message ?? `${error ?? '<Unknown error>'}`);
+				const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+				setError(errorMessage);
 				exit();
 			}
 		})();
@@ -159,19 +138,28 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json}) => {
 
 		if (json) {
 			const jsonData = {
-				...data,
-				downloadSpeed: convertToMbps(data.downloadSpeed!, data.downloadUnit!),
-				uploadSpeed: upload ? convertToMbps(data.uploadSpeed!, data.uploadUnit!) : undefined,
-				downloadUnit: data.downloadUnit,
-				uploadUnit: upload ? data.uploadUnit : undefined,
-				isDone: undefined, // Explicitly omit 'isDone'
+				downloadSpeed: convertToMbps(data.downloadSpeed ?? 0, data.downloadUnit ?? 'Mbps'),
+				uploadSpeed: upload ? convertToMbps(data.uploadSpeed ?? 0, data.uploadUnit ?? 'Mbps') : undefined,
+				downloadUnit: 'Mbps' as const,
+				uploadUnit: upload ? 'Mbps' as const : undefined,
+				downloaded: data.downloaded,
+				uploaded: data.uploaded,
+				latency: data.latency,
+				bufferBloat: data.bufferBloat,
+				userLocation: data.userLocation,
+				userIp: data.userIp,
 			};
 
 			write(JSON.stringify(jsonData, (_key, value) =>
-				// Exclude keys with undefined values from serialization.
-				value === undefined ? undefined : value, // eslint-disable-line @typescript-eslint/no-unsafe-return
-			'\t',
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+				value === undefined ? undefined : value,
+				'\t',
 			));
+		} else if (!process.stdout.isTTY) {
+			write(`${data.downloadSpeed ?? 0} ${data.downloadUnit ?? 'Mbps'}`);
+			if (upload && data.uploadSpeed) {
+				write(`\n${data.uploadSpeed} ${data.uploadUnit ?? 'Mbps'}`);
+			}
 		}
 
 		exit();
@@ -182,7 +170,8 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json}) => {
 		return <ErrorMessage text={error}/>;
 	}
 
-	if (json) {
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+	if (json || !process.stdout.isTTY) {
 		return null;
 	}
 
