@@ -51,3 +51,23 @@ test('json upload output', async t => {
 	t.is(typeof data.downloadSpeed, 'number');
 	t.is(typeof data.uploadSpeed, 'number');
 });
+
+test('verbose flag', async t => {
+	const {stdout} = await execa('node', ['./distribution/cli.js', '--verbose'], {timeout: 90_000});
+
+	// Should contain speed measurement
+	t.regex(stdout, /\d+(?:\.\d+)?\s+[MGKB]bps/);
+
+	// Should contain latency information
+	t.regex(stdout, /Latency:/);
+	t.regex(stdout, /\d+\s+ms/);
+
+	// Should contain client information
+	t.regex(stdout, /Client:/);
+});
+
+test('verbose flag in help', async t => {
+	const {stdout} = await execa('node', ['./distribution/cli.js', '--help']);
+	t.true(stdout.includes('--verbose'));
+	t.true(stdout.includes('Include latency and server location information'));
+});

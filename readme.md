@@ -27,6 +27,7 @@ $ fast --help
     --upload, -u   Measure upload speed in addition to download speed
     --single-line  Reduce spacing and output to a single line
     --json         JSON output
+    --verbose      Include latency and server location information
 
   Examples
     $ fast --upload > file && cat file
@@ -39,6 +40,22 @@ $ fast --help
 ### Upload speed
 
 <img src="screenshot-upload.gif" width="500" height="260">
+
+### Verbose output
+
+Include additional diagnostic information like latency and client location:
+
+```sh
+fast --verbose
+```
+
+```
+72 Mbps
+8 Mbps
+
+Latency: 8 ms (unloaded) / 16 ms (loaded)
+Client: Osaka, JP • 216.144.245.67
+```
 
 ### JSON output
 
