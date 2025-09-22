@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import React from 'react';
 import meow from 'meow';
 import {render} from 'ink';
 import Ui from './ui.js';
@@ -39,16 +40,14 @@ const cli = meow(`
 	} as const,
 });
 
-function App() {
-	return (
-		<Ui
-			singleLine={cli.flags.singleLine}
-			upload={cli.flags.upload || cli.flags.verbose} // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
-			json={cli.flags.json}
-			verbose={cli.flags.verbose}
-		/>
-	);
-}
+const App: React.FC = () => (
+	<Ui
+		singleLine={cli.flags.singleLine}
+		upload={cli.flags.upload || cli.flags.verbose} // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+		json={cli.flags.json}
+		verbose={cli.flags.verbose}
+	/>
+);
 
 const app = render(<App/>);
 await app.waitUntilExit();
