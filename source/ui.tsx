@@ -15,23 +15,6 @@ type SpacerProperties = {
 
 const FixedSpacer: React.FC<SpacerProperties> = ({size}) => <>{' '.repeat(size)}</>;
 
-type ErrorMessageProperties = {
-	readonly text: string;
-};
-
-const ErrorMessage: React.FC<ErrorMessageProperties> = ({text}) => (
-	<Box>
-		<Text bold color='red'>
-			›
-			<FixedSpacer size={1}/>
-		</Text>
-		<Text dimColor>
-			{text}
-		</Text>
-		<Newline count={2}/>
-	</Box>
-);
-
 type SpeedProperties = {
 	readonly singleLine?: boolean;
 };
@@ -230,7 +213,6 @@ type FastProperties = {
 };
 
 const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
-	const [error, setError] = useState('');
 	const [data, setData] = useState<PartialSpeedData>({});
 	const [isDone, setIsDone] = useState(false);
 	const {exit} = useApp();
@@ -241,12 +223,11 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 			try {
 				await dns.lookup('fast.com');
 			} catch (error: any) {
-				setError(error.code === 'ENOTFOUND'
+				const message = error.code === 'ENOTFOUND'
 					? 'Please check your internet connection'
-					: 'Failed to connect to fast.com',
-				);
-				exit();
-				return;
+					: 'Failed to connect to fast.com';
+				process.stderr.write(message + '\n');
+				process.exit(1); // eslint-disable-line unicorn/no-process-exit
 			}
 
 			try {
@@ -255,11 +236,11 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 				}
 			} catch (error: unknown) {
 				const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-				setError(errorMessage);
-				exit();
+				process.stderr.write(errorMessage + '\n');
+				process.exit(1); // eslint-disable-line unicorn/no-process-exit
 			}
 		})();
-	}, [exit, upload]);
+	}, [upload]);
 
 	useEffect(() => {
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -287,10 +268,6 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 		exit();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDone, exit]);
-
-	if (error) {
-		return <ErrorMessage text={error}/>;
-	}
 
 	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	if (json || !process.stdout.isTTY) {
