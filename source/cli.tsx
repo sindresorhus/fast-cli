@@ -49,5 +49,13 @@ const App: React.FC = () => (
 	/>
 );
 
-const app = render(<App/>);
-await app.waitUntilExit();
+async function main() {
+	const app = render(<App/>);
+	await app.waitUntilExit();
+}
+
+// It cannot use top-level await as that errors with some React error.
+// eslint-disable-next-line unicorn/prefer-top-level-await
+main().catch((error: unknown) => {
+	console.error(error);
+});

@@ -60,11 +60,11 @@
 		"ava": "^6.4.1",
 		"eslint-config-xo-react": "^0.27.0",
 		"eslint-plugin-react": "^7.34.1",
-		"eslint-plugin-react-hooks": "^4.6.2",
+		"eslint-plugin-react-hooks": "^5.2.0",
 		"execa": "^9.6.0",
 		"p-event": "^7.0.0",
 		"tsx": "^4.20.5",
-		"xo": "^0.59.0"
+		"xo": "^0.59.3"
 	},
 	"xo": {
 		"extends": [
