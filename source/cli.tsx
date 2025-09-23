@@ -54,4 +54,7 @@ async function main() {
 	await app.waitUntilExit();
 }
 
-main().catch(console.error);
+// eslint-disable-next-line unicorn/prefer-top-level-await
+main().catch((error: unknown) => {
+	console.error(error);
+});
