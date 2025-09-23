@@ -49,5 +49,9 @@ const App: React.FC = () => (
 	/>
 );
 
-const app = render(<App/>);
-await app.waitUntilExit();
+async function main() {
+	const app = render(<App/>);
+	await app.waitUntilExit();
+}
+
+main().catch(console.error);
