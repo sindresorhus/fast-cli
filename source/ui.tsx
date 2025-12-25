@@ -127,7 +127,22 @@ const VerboseInfo: React.FC<VerboseInfoProperties> = ({data, singleLine}) => {
 						<Text dimColor>Detecting...</Text>
 					)}
 				</Box>
+				<Box>
+					<Text><FixedSpacer size={4}/></Text>
+					<Text dimColor>Server: </Text>
+					{data.serverLocations ? (
+						data.serverLocations.map((location, index) => (
+							<Text key={location}>
+								{index > 0 && <Text dimColor>{' | '}</Text>}
+								<Text color='white'>{location}</Text>
+							</Text>
+						))
+					) : (
+						<Text dimColor>Detecting...</Text>
+					)}
+				</Box>
 			</Box>
+
 		</>
 	);
 };
@@ -170,6 +185,10 @@ function formatVerboseText(data: PartialSpeedData): string[] {
 		lines.push(clientLine);
 	}
 
+	if (data.serverLocations?.length) {
+		lines.push(`Server: ${data.serverLocations.join(' | ')}`);
+	}
+
 	return lines;
 }
 
@@ -184,6 +203,7 @@ function createJsonOutput(data: PartialSpeedData, upload: boolean) {
 		latency: data.latency,
 		bufferBloat: data.bufferBloat,
 		userLocation: data.userLocation,
+		serverLocations: data.serverLocations,
 		userIp: data.userIp,
 	};
 }

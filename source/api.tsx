@@ -25,6 +25,7 @@ async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGen
 				latency: Number($('#latency-value')?.textContent?.trim()) || 0,
 				bufferBloat: Number($('#bufferbloat-value')?.textContent?.trim()) || 0,
 				userLocation: $('#user-location')?.textContent?.trim() ?? '',
+				serverLocations: $('#server-locations')?.textContent?.split('|').map(location => location.trim()).filter(Boolean) ?? [],
 				userIp: $('#user-ip')?.textContent?.trim() ?? '',
 				isDone: Boolean($('#speed-value.succeeded') && $('#upload-value.succeeded')),
 			};
