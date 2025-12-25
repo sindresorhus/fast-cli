@@ -1,5 +1,5 @@
 import {isDeepStrictEqual} from 'node:util';
-import puppeteer from 'puppeteer';
+import {launch, type Page} from 'puppeteer';
 import {delay} from 'unicorn-magic';
 import {type SpeedData, type SpeedUnit} from './types.js';
 
@@ -7,7 +7,7 @@ type Options = {
 	measureUpload?: boolean;
 };
 
-async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGenerator<SpeedData, void, undefined> {
+async function * monitorSpeed(page: Page, options?: Options): AsyncGenerator<SpeedData, void, undefined> {
 	let previousResult: SpeedData | undefined;
 
 	while (true) {
@@ -47,7 +47,7 @@ async function * monitorSpeed(page: puppeteer.Page, options?: Options): AsyncGen
 }
 
 export default async function * api(options?: Options): AsyncGenerator<SpeedData, void, undefined> {
-	const browser = await puppeteer.launch({
+	const browser = await launch({
 		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
 		headless: true,
 	});
