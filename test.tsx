@@ -22,6 +22,7 @@ test('json output', async t => {
 	t.is(typeof data.downloadSpeed, 'number');
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	t.regex(data.downloadUnit, /^[MGKB]bps$/);
+	t.true(Array.isArray(data.serverLocations));
 });
 
 test('upload flag', async t => {
@@ -64,6 +65,9 @@ test('verbose flag', async t => {
 
 	// Should contain client information
 	t.regex(stdout, /Client:/);
+
+	// Should contain server information
+	t.regex(stdout, /Server:/);
 });
 
 test('verbose flag in help', async t => {

@@ -10,6 +10,7 @@ export type SpeedData = {
 	readonly latency: number;
 	readonly bufferBloat: number;
 	readonly userLocation: string;
+	readonly serverLocations: string[];
 	readonly userIp: string;
 	readonly isDone: boolean;
 };
