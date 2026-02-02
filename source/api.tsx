@@ -48,7 +48,7 @@ async function * monitorSpeed(page: Page, options?: Options): AsyncGenerator<Spe
 
 export default async function * api(options?: Options): AsyncGenerator<SpeedData, void, undefined> {
 	const browser = await launch({
-		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--ignore-certificate-errors'],
 		headless: true,
 	});
 	const page = await browser.newPage();
