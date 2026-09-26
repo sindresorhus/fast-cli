@@ -11,9 +11,12 @@ async function * monitorSpeed(page: Page, options?: Options): AsyncGenerator<Spe
 	let previousResult: SpeedData | undefined;
 
 	while (true) {
-		// eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-loop-func
+		// eslint-disable-next-line no-await-in-loop, complexity
 		const result = await page.evaluate(() => {
-			const $ = document.querySelector.bind(document);
+			// Puppeteer serializes this callback and runs it inside the page, so `document` is a
+			// real global here and cannot be passed in from the Node.js side.
+			// eslint-disable-next-line unicorn/isolated-functions
+			const $ = (selector: string) => document.querySelector(selector);
 
 			return {
 				downloadSpeed: Number($('#speed-value')?.textContent) || 0,

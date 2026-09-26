@@ -6,7 +6,7 @@
 
 ## Install
 
-Ensure you have [Node.js](https://nodejs.org) 20+ installed. Then run the following:
+Ensure you have [Node.js](https://nodejs.org) 22.12+ installed. Then run the following:
 
 ```sh
 npm install --global fast-cli
@@ -16,7 +16,7 @@ npm install --global fast-cli
 
 ## Usage
 
-```
+```text
 $ fast --help
 
   Usage
@@ -49,12 +49,13 @@ Include additional diagnostic information like latency and client location:
 fast --verbose
 ```
 
-```
+```text
 72 Mbps
 8 Mbps
 
 Latency: 8 ms (unloaded) / 16 ms (loaded)
 Client: Osaka, JP • 216.144.245.67
+Server: Osaka, JP | Tokyo, JP
 ```
 
 ### JSON output
@@ -76,6 +77,7 @@ fast --upload --json
 	"latency": 9,
 	"bufferBloat": 46,
 	"userLocation": "Somewhere, NO",
+	"serverLocations": ["Somewhere, NO", "Elsewhere, SE"],
 	"userIp": "49.222.206.21"
 }
 ```

@@ -5,23 +5,19 @@
 	"license": "MIT",
 	"repository": "sindresorhus/fast-cli",
 	"funding": "https://github.com/sponsors/sindresorhus",
-	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "https://sindresorhus.com"
-	},
+	"author": "Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)",
 	"type": "module",
 	"bin": {
 		"fast": "./distribution/cli.js"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"scripts": {
 		"build": "tsc",
-		"prepublish": "npm run build",
+		"prepublishOnly": "npm run build",
 		"pretest": "npm run build",
-		"test": "xo && NODE_OPTIONS='--import=tsx/esm' ava"
+		"test": "xo && node --import=tsx/esm --test 'test*.tsx'"
 	},
 	"files": [
 		"distribution"
@@ -47,45 +43,22 @@
 		"mbps"
 	],
 	"dependencies": {
-		"ink": "^6.3.1",
+		"ink": "^7.1.1",
 		"ink-spinner": "^5.0.0",
-		"meow": "^14.0.0",
-		"puppeteer": "^24.22.0",
-		"react": "^19.1.1",
-		"unicorn-magic": "^0.3.0"
+		"meow": "^14.1.0",
+		"puppeteer": "^25.12.0",
+		"react": "^19.3.0",
+		"unicorn-magic": "^0.4.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^8.0.1",
-		"@types/react": "^19.1.13",
-		"ava": "^6.4.1",
-		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.34.1",
-		"eslint-plugin-react-hooks": "^5.2.0",
-		"execa": "^9.6.0",
-		"p-event": "^7.0.0",
-		"tsx": "^4.20.5",
-		"xo": "^0.59.3"
-	},
-	"xo": {
-		"extends": [
-			"xo-react"
-		],
-		"rules": {
-			"react/prop-types": "off",
-			"react/function-component-definition": "off",
-			"react/boolean-prop-naming": "off",
-			"@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-			"react/no-unused-prop-types": "off",
-			"@typescript-eslint/indent": "off",
-			"react/react-in-jsx-scope": "off"
-		}
-	},
-	"ava": {
-		"extensions": {
-			"ts": "module",
-			"tsx": "module"
-		},
-		"workerThreads": false,
-		"timeout": "10m"
+		"@sindresorhus/tsconfig": "^8.1.0",
+		"@types/node": "^26.6.5",
+		"@types/react": "^19.3.0",
+		"eslint-config-xo-react": "^0.32.0",
+		"eslint-plugin-react-hooks": "^7.1.1",
+		"execa": "^10.0.1",
+		"tsx": "^4.23.15",
+		"typescript": "^6.0.3",
+		"xo": "^5.0.1"
 	}
 }

@@ -2,7 +2,11 @@ import dns from 'node:dns/promises';
 import process from 'node:process';
 import React, {useState, useEffect} from 'react';
 import {
-	Box, Text, Newline, useApp, useStdout,
+	Box,
+	Text,
+	Newline,
+	useApp,
+	useStdout,
 } from 'ink';
 import Spinner from 'ink-spinner';
 import api from './api.js';
@@ -61,13 +65,15 @@ type SpeedComponentProperties = {
 	readonly data: PartialSpeedData;
 };
 
-const Speed: React.FC<SpeedComponentProperties> = ({upload, data}) => upload ? (
-	<>
-		<DownloadSpeed {...data}/>
-		<Text dimColor>{' / '}</Text>
-		<UploadSpeed {...data}/>
-	</>
-) : (<DownloadSpeed {...data}/>);
+const Speed: React.FC<SpeedComponentProperties> = ({upload, data}) => upload
+	? (
+		<>
+			<DownloadSpeed {...data}/>
+			<Text dimColor>{' / '}</Text>
+			<UploadSpeed {...data}/>
+		</>
+	)
+	: (<DownloadSpeed {...data}/>);
 
 type VerboseInfoProperties = {
 	readonly data: PartialSpeedData;
@@ -86,60 +92,66 @@ const VerboseInfo: React.FC<VerboseInfoProperties> = ({data, singleLine}) => {
 				<Box>
 					<Text><FixedSpacer size={4}/></Text>
 					<Text dimColor>Latency: </Text>
-					{hasLatencyData ? (
-						<>
-							{data.latency !== undefined && (
-								<>
-									<Text color='white'>{data.latency}</Text>
-									<Text dimColor> ms (unloaded)</Text>
-								</>
-							)}
-							{data.latency !== undefined && data.bufferBloat !== undefined && (
-								<Text dimColor> / </Text>
-							)}
-							{data.bufferBloat !== undefined && (
-								<>
-									<Text color='white'>{data.bufferBloat}</Text>
-									<Text dimColor> ms (loaded)</Text>
-								</>
-							)}
-						</>
-					) : (
-						<Text dimColor>Measuring...</Text>
-					)}
+					{hasLatencyData
+						? (
+							<>
+								{data.latency !== undefined && (
+									<>
+										<Text color='white'>{data.latency}</Text>
+										<Text dimColor> ms (unloaded)</Text>
+									</>
+								)}
+								{data.latency !== undefined && data.bufferBloat !== undefined && (
+									<Text dimColor> / </Text>
+								)}
+								{data.bufferBloat !== undefined && (
+									<>
+										<Text color='white'>{data.bufferBloat}</Text>
+										<Text dimColor> ms (loaded)</Text>
+									</>
+								)}
+							</>
+						)
+						: (
+							<Text dimColor>Measuring...</Text>
+						)}
 				</Box>
 				<Box>
 					<Text><FixedSpacer size={4}/></Text>
 					<Text dimColor>Client: </Text>
-					{hasClientData ? (
-						<>
-							{data.userLocation && (
-								<Text color='white'>{data.userLocation}</Text>
-							)}
-							{data.userLocation && data.userIp && (
-								<Text dimColor> • </Text>
-							)}
-							{data.userIp && (
-								<Text color='white'>{data.userIp}</Text>
-							)}
-						</>
-					) : (
-						<Text dimColor>Detecting...</Text>
-					)}
+					{hasClientData
+						? (
+							<>
+								{data.userLocation && (
+									<Text color='white'>{data.userLocation}</Text>
+								)}
+								{data.userLocation && data.userIp && (
+									<Text dimColor> • </Text>
+								)}
+								{data.userIp && (
+									<Text color='white'>{data.userIp}</Text>
+								)}
+							</>
+						)
+						: (
+							<Text dimColor>Detecting...</Text>
+						)}
 				</Box>
 				<Box>
 					<Text><FixedSpacer size={4}/></Text>
 					<Text dimColor>Server: </Text>
-					{data.serverLocations ? (
-						data.serverLocations.map((location, index) => (
-							<Text key={location}>
-								{index > 0 && <Text dimColor>{' | '}</Text>}
-								<Text color='white'>{location}</Text>
-							</Text>
-						))
-					) : (
-						<Text dimColor>Detecting...</Text>
-					)}
+					{data.serverLocations
+						? (
+							data.serverLocations.map((location, index) => (
+								<Text key={location}>
+									{index > 0 && <Text dimColor>{' | '}</Text>}
+									<Text color='white'>{location}</Text>
+								</Text>
+							))
+						)
+						: (
+							<Text dimColor>Detecting...</Text>
+						)}
 				</Box>
 			</Box>
 
@@ -192,12 +204,12 @@ function formatVerboseText(data: PartialSpeedData): string[] {
 	return lines;
 }
 
-function createJsonOutput(data: PartialSpeedData, upload: boolean) {
+function createJsonOutput(data: PartialSpeedData, shouldIncludeUpload: boolean) {
 	return {
 		downloadSpeed: convertToMbps(data.downloadSpeed ?? 0, data.downloadUnit ?? 'Mbps'),
-		uploadSpeed: upload ? convertToMbps(data.uploadSpeed ?? 0, data.uploadUnit ?? 'Mbps') : undefined,
+		uploadSpeed: shouldIncludeUpload ? convertToMbps(data.uploadSpeed ?? 0, data.uploadUnit ?? 'Mbps') : undefined,
 		downloadUnit: 'Mbps' as const,
-		uploadUnit: upload ? 'Mbps' as const : undefined,
+		uploadUnit: shouldIncludeUpload ? 'Mbps' as const : undefined,
 		downloaded: data.downloaded,
 		uploaded: data.uploaded,
 		latency: data.latency,
@@ -208,14 +220,14 @@ function createJsonOutput(data: PartialSpeedData, upload: boolean) {
 	};
 }
 
-function formatTextOutput(data: PartialSpeedData, upload: boolean, verbose: boolean): string {
+function formatTextOutput(data: PartialSpeedData, shouldIncludeUpload: boolean, shouldIncludeVerbose: boolean): string {
 	let output = `${data.downloadSpeed ?? 0} ${data.downloadUnit ?? 'Mbps'}`;
 
-	if (upload && data.uploadSpeed) {
+	if (shouldIncludeUpload && data.uploadSpeed) {
 		output += `\n${data.uploadSpeed} ${data.uploadUnit ?? 'Mbps'}`;
 	}
 
-	if (verbose) {
+	if (shouldIncludeVerbose) {
 		const verboseLines = formatVerboseText(data);
 		if (verboseLines.length > 0) {
 			output += '\n\n' + verboseLines.join('\n');
@@ -234,16 +246,18 @@ type FastProperties = {
 
 const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 	const [data, setData] = useState<PartialSpeedData>({});
-	const [isDone, setIsDone] = useState(false);
 	const {exit} = useApp();
 	const {write} = useStdout();
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+	const isDone = Boolean(data.isDone || (!upload && data.uploadSpeed));
 
 	useEffect(() => {
 		(async () => {
 			try {
 				await dns.lookup('fast.com');
-			} catch (error: any) {
-				const message = error.code === 'ENOTFOUND'
+			} catch (error: unknown) {
+				const isNotFound = error instanceof Error && 'code' in error && error.code === 'ENOTFOUND';
+				const message = isNotFound
 					? 'Please check your internet connection'
 					: 'Failed to connect to fast.com';
 				process.stderr.write(message + '\n');
@@ -263,13 +277,6 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 	}, [upload]);
 
 	useEffect(() => {
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-		if (data.isDone || (!upload && data.uploadSpeed)) {
-			setIsDone(true);
-		}
-	}, [data.isDone, upload, data.uploadSpeed]);
-
-	useEffect(() => {
 		if (!isDone) {
 			return;
 		}
@@ -278,9 +285,7 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 			const jsonData = createJsonOutput(data, Boolean(upload));
 			write(JSON.stringify(jsonData, (_key, value) =>
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-				value === undefined ? undefined : value,
-				'\t',
-			));
+				value === undefined ? undefined : value, '\t'));
 		} else if (!process.stdout.isTTY) {
 			write(formatTextOutput(data, Boolean(upload), Boolean(verbose)));
 		}
