@@ -237,6 +237,13 @@ function formatTextOutput(data: PartialSpeedData, shouldIncludeUpload: boolean, 
 	return output;
 }
 
+function exitWithErrorMessage(message: string): void {
+	// Exit in the write callback so the message is flushed even when stderr is a pipe, since `process.exit` does not wait for pending pipe writes.
+	process.stderr.write(message + '\n', () => {
+		process.exit(1); // eslint-disable-line unicorn/no-process-exit
+	});
+}
+
 type FastProperties = {
 	readonly singleLine?: boolean;
 	readonly upload?: boolean;
@@ -260,8 +267,8 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 				const message = isNotFound
 					? 'Please check your internet connection'
 					: 'Failed to connect to fast.com';
-				process.stderr.write(message + '\n');
-				process.exit(1); // eslint-disable-line unicorn/no-process-exit
+				exitWithErrorMessage(message);
+				return;
 			}
 
 			try {
@@ -270,8 +277,7 @@ const Ui: React.FC<FastProperties> = ({singleLine, upload, json, verbose}) => {
 				}
 			} catch (error: unknown) {
 				const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-				process.stderr.write(errorMessage + '\n');
-				process.exit(1); // eslint-disable-line unicorn/no-process-exit
+				exitWithErrorMessage(errorMessage);
 			}
 		})();
 	}, [upload]);

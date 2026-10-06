@@ -1,5 +1,17 @@
+import {existsSync} from 'node:fs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import process from 'node:process';
 import {isDeepStrictEqual} from 'node:util';
-import {launch, type Page} from 'puppeteer';
+import {
+	install,
+	uninstall,
+	Browser,
+	detectBrowserPlatform,
+	getDownloadUrl,
+	resolveBuildId,
+} from '@puppeteer/browsers';
+import puppeteer, {launch, type Page} from 'puppeteer';
 import {delay} from 'unicorn-magic';
 import {type SpeedData, type SpeedUnit} from './types.js';
 
@@ -49,7 +61,62 @@ async function * monitorSpeed(page: Page, options?: Options): AsyncGenerator<Spe
 	}
 }
 
+/**
+Ensures the Chrome build pinned by Puppeteer is available, installing it on demand if needed.
+
+Newer npm versions no longer run install scripts by default, so the browser may not have been downloaded at install time.
+*/
+async function ensureBrowser(): Promise<void> {
+	const configuration = await puppeteer.configuration();
+
+	// A configured browser path is used verbatim by launch, so there is nothing to install in that case.
+	// Uses truthiness (not nullish coalescing) to match how launch itself checks the configured path, including treating an empty string as unset.
+	// A download opt-out is respected the same way Puppeteer's own install script does, so launch then fails with Puppeteer's usual missing-browser error.
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+	if (configuration.executablePath || configuration.skipDownload || configuration.chrome?.skipDownload) {
+		return;
+	}
+
+	try {
+		if (existsSync(await puppeteer.executablePath())) {
+			return;
+		}
+	} catch {
+		// A configured version selector may require resolution before Puppeteer can compute its executable path.
+	}
+
+	const cacheDir = configuration.cacheDirectory;
+	if (!cacheDir) {
+		throw new Error('Could not determine the Puppeteer cache directory');
+	}
+
+	// `browserVersion` exists at runtime, but is missing from Puppeteer's bundled TypeScript types.
+	const unresolvedBuildId = await (puppeteer as typeof puppeteer & {browserVersion(): Promise<string>}).browserVersion();
+	const platform = detectBrowserPlatform();
+	if (!platform) {
+		throw new Error('Could not determine the browser platform');
+	}
+
+	const buildId = await resolveBuildId(Browser.CHROME, platform, unresolvedBuildId);
+	const options = {
+		browser: Browser.CHROME, buildId, cacheDir, platform, baseUrl: configuration.chrome?.downloadBaseUrl,
+		buildIdAlias: buildId === unresolvedBuildId ? undefined : unresolvedBuildId,
+	};
+
+	// Remove leftovers of an interrupted install (incomplete archive or folder without the executable), which would otherwise fail the install.
+	// `uninstall` is a no-op when nothing is installed.
+	await uninstall(options);
+	const archiveName = path.basename(decodeURIComponent(getDownloadUrl(options.browser, platform, buildId, options.baseUrl).pathname));
+	await fs.rm(path.join(cacheDir, options.browser, `${buildId}-${archiveName}`), {force: true});
+
+	process.stderr.write('Downloading Chrome, first run only (~200 MB)...\n');
+
+	await install(options);
+}
+
 export default async function * api(options?: Options): AsyncGenerator<SpeedData, void, undefined> {
+	await ensureBrowser();
+
 	const browser = await launch({
 		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--ignore-certificate-errors'],
 		headless: true,

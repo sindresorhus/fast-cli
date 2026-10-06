@@ -12,7 +12,7 @@ Ensure you have [Node.js](https://nodejs.org) 22.12+ installed. Then run the fol
 npm install --global fast-cli
 ```
 
-*This project uses Puppeteer under the hood. Most [install issues](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md) are related to that.*
+*This project uses Puppeteer under the hood. On first run, it downloads Chrome (~200 MB) if it's not already installed. Most [install issues](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md) are related to that.*
 
 ## Usage
 
